@@ -1,0 +1,24 @@
+{% extends "project_inventory/base.html" %}
+{% load tethys_gizmos %}
+
+{% block app_content %}
+  <h1>Add Project</h1>
+  <form id="add-project-form" method="post">
+    {% csrf_token %}
+    <div class="form-group{% if location_error %} has-error{% endif %}">
+      <label class="control-label">Location</label>
+      {% gizmo location_input %}
+      {% if location_error %}<p class="help-block">{{ location_error }}</p>{% endif %}
+    </div>
+    {% gizmo facility_id_input %}
+    {% gizmo project_input %}
+    {% gizmo cost_input %}
+    {% gizmo planned_year_input %}
+
+  </form>
+{% endblock %}
+
+{% block app_actions %}
+  {% gizmo add_button %}
+  {% gizmo cancel_button %}
+{% endblock %}

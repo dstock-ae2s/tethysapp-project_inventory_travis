@@ -1,0 +1,64 @@
+{% extends "project_inventory/base.html" %}
+{% load tethys_gizmos staticfiles %}
+
+{% block import_gizmos %}
+  {% import_gizmo_dependency plotly_view %}
+{% endblock %}
+
+{% block app_content %}
+  {% gizmo project_inventory_map %}
+  <div id="popup"></div>
+{% endblock %}
+
+{% block after_app_content %}
+  <div class="modal fade" id="map-popup-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="modal-facility-id">_</h5>
+        </div>
+        <div class="modal-body" id="map-popup-modal-body">
+          <table>
+            <tr>
+              <th>Project</th>
+              <th>Cost</th>
+              <th>Year</th>
+            </tr>
+            <tr id="project-1" class="project-row">
+              <td id="project-1-project">
+                <input type="text" id="modal-project" value="">
+              </td>
+              <td id="project-1-cost">
+                <input type="text" id="modal-cost" value="">
+              </td>
+              <td id="project-1-year">
+                <input type="date" id="modal-planned-year" value="">
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block app_actions %}
+  {% if can_add_projects %}
+    {% gizmo add_project_button %}
+  {% endif %}
+{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link href="{% static 'project_inventory/css/map.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'project_inventory/js/map.js' %}" type="text/javascript"></script>
+{% endblock %}
