@@ -9,6 +9,18 @@ Base = declarative_base()
 
 
 # SQLAlchemy ORM definition for the projects table
+# class Revenue(Base):
+#     """
+#     SQLAlchemy Project DB Model
+#     """
+#     __tablename__ = 'revenue'
+#
+#     # Columns
+#     id = Column(Integer, primary_key=True)
+#     revenue_source = Column(String)
+#     monetary_Value = Column(String)
+#     year = Column(String)
+
 class Project(Base):
     """
     SQLAlchemy Project DB Model

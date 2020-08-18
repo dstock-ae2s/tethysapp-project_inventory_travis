@@ -1,6 +1,6 @@
 .popover-content {
-    width: 400px;
-    max-height: 300px;
+    max-width: none;
+    max-height: 700px;
     overflow-y: auto;
 }
 
@@ -14,4 +14,32 @@
 
 #app-content, #inner-app-content, #map_view_outer_container {
     height: 100%;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width:100%;
+
+}
+td, th {
+  border: 1px solid #000000;
+  text-align: left;
+  padding: 8px;
+  backgroundColor:white;
+}
+tr:nth-child(even) {
+  backgroundColor:black;
+
+}
+.edit-fields {
+  border:None;
+  backgroundColor:transparent;
+}
+
+#map-popup-modal {
+  width:90%;
+}
+.btn {
+  margin:10px;
 }

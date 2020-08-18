@@ -41,6 +41,16 @@ class ProjectInventory(TethysAppBase):
                 url='project-inventory/projects',
                 controller='project_inventory.controllers.list_projects'
             ),
+            UrlMap(
+                name='get-project-list',
+                url='project-inventory/get-project-list',
+                controller='project_inventory.ajax_controllers.get_project_list'
+            ),
+            UrlMap(
+                name='save-updates-to-db',
+                url='project-inventory/save-updates-to-db',
+                controller='project_inventory.ajax_controllers.save_updates_to_db'
+            ),
         )
 
         return url_maps

@@ -6,16 +6,16 @@
 {% endblock %}
 
 {% block app_content %}
-  {% gizmo project_inventory_map %}
+
   <div id="popup"></div>
 {% endblock %}
 
 {% block after_app_content %}
   <div class="modal fade" id="map-popup-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-    <div class="modal-dialog"  style="width:90%;" role="document">
-      <div class="modal-content" style="width:90%;">
+    <div class="modal-dialog" style="width:1000px" role="document">
+      <div class="modal-content" style="width:1000px">
         <div class="modal-header">
-          <button type="button" onclick="closeModal()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h5 class="modal-title" id="modal-facility-id">_</h5>
         </div>
         <div class="modal-body" id="map-popup-modal-body">
@@ -39,12 +39,10 @@
               <!--</td>-->
             <!--</tr>-->
           </table>
-          <a style="float:left;" name="submit-add-project" id="add-project-button" onclick="addProjectRow();" class="btn btn-success submit-add-project" role="button">
-                            <span class="glyphicon glyphicon-plus"></span> Add New Project </a>
         </div>
         <div class="modal-footer">
-          <button type="button" onclick="closeModal();" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" onclick="closeModal();" id="save-project-updates-button" class="btn btn-primary" data-dismiss="modal">Save Changes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" id="save-project-updates-button" class="btn btn-primary" data-dismiss="modal">Save Changes</button>
         </div>
       </div>
     </div>
