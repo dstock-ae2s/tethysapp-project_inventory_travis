@@ -1,6 +1,6 @@
 import json
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, Float, String, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, ForeignKey, ARRAY
 from sqlalchemy.orm import sessionmaker, relationship
 
 from .app import ProjectInventory as app
@@ -33,7 +33,7 @@ class Project(Base):
     longitude = Column(Float)
     facility_id = Column(String)
     project = Column(String)
-    cost = Column(String)
+    cost = Column(ARRAY(String))
     planned_year = Column(String)
     category = Column(String)
     description = Column(String)
@@ -42,7 +42,7 @@ class Project(Base):
     const_cost = Column(String)
 
 
-def add_new_project(location, facility_id, project, cost, planned_year, category, description, priority, est_year, const_cost):
+def add_new_project(location, facility_id, project, cost, planned_year, category, description, priority, est_year, const_cost, checkbox):
     """
     Persist new project.
     """
@@ -52,13 +52,25 @@ def add_new_project(location, facility_id, project, cost, planned_year, category
     longitude = location_geometry['coordinates'][0]
     latitude = location_geometry['coordinates'][1]
 
+    interest_rate = 0.04
+    pay_period = 20
+
+    cost_array = []
+    cost_array.append(cost)
+    if checkbox=="true":
+        annual_payment = float(cost) * (
+                (interest_rate * (1 + interest_rate) ** (pay_period)) / (
+                (1 + interest_rate) ** (pay_period) - 1))
+        for _ in range(pay_period-1):
+            cost_array.append(annual_payment)
+
     # Create new Project record
     new_project = Project(
         latitude=latitude,
         longitude=longitude,
         facility_id=facility_id,
         project=project,
-        cost=cost,
+        cost=cost_array,
         planned_year=planned_year,
         category=category,
         description=description,
@@ -112,7 +124,7 @@ def init_primary_db(engine, first_time):
             longitude=-111.529133,
             facility_id="Deer Creek",
             project="New Intake",
-            cost="1000",
+            cost=["1000"],
             planned_year="2020",
             category="Water",
             description="Replace Deer Creek intake structure",
@@ -126,7 +138,7 @@ def init_primary_db(engine, first_time):
             longitude=-111.424055,
             facility_id="Jordanelle",
             project="Clean Water",
-            cost="2000",
+            cost=["2000"],
             planned_year="2020",
             category="Stormwater",
             description="Clean up Jordanelle",

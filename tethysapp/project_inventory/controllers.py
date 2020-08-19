@@ -285,7 +285,7 @@ def home(request):
     )
 
     add_project_button = Button(
-        display_text='Add project',
+        display_text='Add Facility',
         name='add-project-button',
         icon='glyphicon glyphicon-plus',
         style='success',
@@ -345,6 +345,8 @@ def add_project(request):
         priority = request.POST.get('priority', None)
         est_year = request.POST.get('est_year', None)
         const_cost = request.POST.get('const_cost', None)
+        checked = request.POST.get('add_project_checkbox')
+
 
         # Validate
         if not facility_id:
@@ -398,7 +400,7 @@ def add_project(request):
 
             # Only add the project if custom setting doesn't exist or we have not exceed max_projects
             if not max_projects or num_projects < max_projects:
-                add_new_project(location=location, facility_id=facility_id, project=project, cost=cost, planned_year=planned_year, category=category, description=description, priority=priority, est_year=est_year, const_cost=const_cost)
+                add_new_project(location=location, facility_id=facility_id, project=project, cost=cost, planned_year=planned_year, category=category, description=description, priority=priority, est_year=est_year, const_cost=const_cost, checkbox=checked)
             else:
                 messages.warning(request, 'Unable to add project "{0}", because the inventory is full.'.format(facility_id))
 
@@ -555,7 +557,7 @@ def list_projects(request):
             (
                 project.facility_id, project.category,
                 project.project, project.description, project.priority,
-                project.est_year, project.cost,
+                project.est_year, project.cost[0],
                 project.planned_year, project.const_cost,
             )
         )
