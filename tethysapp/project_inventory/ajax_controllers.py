@@ -13,6 +13,11 @@ def get_project_list (request):
         fac_projname_list = []
         fac_projcost_list = []
         fac_projyear_list = []
+        fac_projcategory_list = []
+        fac_projdescription_list = []
+        fac_projpriority_list = []
+        fac_projestyear_list = []
+        fac_projconstcost_list = []
 
 
         for project in project_list:
@@ -20,10 +25,23 @@ def get_project_list (request):
                 fac_projname_list.append(project.project)
                 fac_projcost_list.append(project.cost)
                 fac_projyear_list.append(project.planned_year)
+                fac_projcategory_list.append(project.category)
+                fac_projdescription_list.append(project.description)
+                fac_projpriority_list.append(project.priority)
+                fac_projestyear_list.append(project.est_year)
+                fac_projconstcost_list.append(project.const_cost)
 
         return_obj["project_name"] = fac_projname_list
         return_obj["cost"] = fac_projcost_list
         return_obj["planned_year"] = fac_projyear_list
+        return_obj["category"] = fac_projcategory_list
+        return_obj["description"] = fac_projdescription_list
+        return_obj["priority"] = fac_projpriority_list
+        return_obj["est_year"] = fac_projestyear_list
+        return_obj["const_cost"] = fac_projconstcost_list
+
+        print("GET PROJECT LIST AJAX")
+        print(return_obj)
 
         return JsonResponse(return_obj)
 
@@ -36,6 +54,11 @@ def save_updates_to_db (request):
         project_name_list = json.loads(project_name_string)
         project_cost_list = json.loads(request.POST['project_cost_list'])
         project_year_list = json.loads(request.POST['project_year_list'])
+        project_category_list = json.loads(request.POST['project_category_list'])
+        project_description_list = json.loads(request.POST['project_description_list'])
+        project_priority_list = json.loads(request.POST['project_priority_list'])
+        project_est_year = json.loads(request.POST['project_est_year_list'])
+        project_const_cost_list = json.loads(request.POST['project_const_cost_list'])
 
         # Get connection/session to database
         Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
@@ -56,7 +79,12 @@ def save_updates_to_db (request):
              facility_id=fac_id,
              project=project_name_list[i],
              cost=project_cost_list[i],
-             planned_year=project_year_list[i]
+             planned_year=project_year_list[i],
+             category=project_category_list[i],
+             description=project_description_list[i],
+             priority=project_priority_list[i],
+             est_year=project_est_year,
+             const_cost=project_const_cost_list[i],
             )
             session.add(new_project)
 

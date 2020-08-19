@@ -15,10 +15,10 @@ def create_bargraph(height='520 px', width='100%'):
     session = Session()
     projects = session.query(Project).all()
 
-    df = pd.DataFrame(columns=['Construction Year', 'Projected Cost', 'Facility ID', 'Project'])
+    df = pd.DataFrame(columns=['Construction Year', 'Construction Cost', 'Facility ID', 'Project', 'Category'])
 
     for project in projects:
-        df=df.append({'Construction Year': project.planned_year, 'Projected Cost': int(project.cost), 'Facility ID': project.facility_id, 'Project':project.project}, ignore_index=True)
+        df=df.append({'Construction Year': project.planned_year, 'Construction Cost': int(project.const_cost), 'Facility ID': project.facility_id, 'Project':project.project, 'Category':project.category}, ignore_index=True)
 
 
     # Build up Plotly plot
@@ -26,13 +26,13 @@ def create_bargraph(height='520 px', width='100%'):
         df,
         hover_data=["Project"],
         x="Construction Year",
-        y="Projected Cost",
+        y="Construction Cost",
         color="Facility ID",
         title="Future Project Costs"
     )
 
     bargraph_px.update_layout(
-        yaxis=dict(title='Projected Cost (USD)',),
+        yaxis=dict(title='Construction Cost (USD)',),
         xaxis=dict(title='Construction Year'),
         legend=dict(title='Facility ID')
     )

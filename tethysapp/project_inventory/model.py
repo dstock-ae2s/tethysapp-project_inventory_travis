@@ -9,17 +9,17 @@ Base = declarative_base()
 
 
 # SQLAlchemy ORM definition for the projects table
-# class Revenue(Base):
-#     """
-#     SQLAlchemy Project DB Model
-#     """
-#     __tablename__ = 'revenue'
-#
-#     # Columns
-#     id = Column(Integer, primary_key=True)
-#     revenue_source = Column(String)
-#     monetary_Value = Column(String)
-#     year = Column(String)
+class Revenue(Base):
+    """
+    SQLAlchemy Project DB Model
+    """
+    __tablename__ = 'revenue'
+
+    # Columns
+    id = Column(Integer, primary_key=True)
+    revenue_source = Column(String)
+    monetary_Value = Column(String)
+    year = Column(String)
 
 class Project(Base):
     """
@@ -35,9 +35,14 @@ class Project(Base):
     project = Column(String)
     cost = Column(String)
     planned_year = Column(String)
+    category = Column(String)
+    description = Column(String)
+    priority = Column(String)
+    est_year = Column(String)
+    const_cost = Column(String)
 
 
-def add_new_project(location, facility_id, project, cost, planned_year):
+def add_new_project(location, facility_id, project, cost, planned_year, category, description, priority, est_year, const_cost):
     """
     Persist new project.
     """
@@ -54,7 +59,12 @@ def add_new_project(location, facility_id, project, cost, planned_year):
         facility_id=facility_id,
         project=project,
         cost=cost,
-        planned_year=planned_year
+        planned_year=planned_year,
+        category=category,
+        description=description,
+        priority=priority,
+        est_year=est_year,
+        const_cost=const_cost
     )
 
     # Get connection/session to database
@@ -101,18 +111,28 @@ def init_primary_db(engine, first_time):
             latitude=40.406624,
             longitude=-111.529133,
             facility_id="Deer Creek",
-            project="Reclamation",
+            project="New Intake",
             cost="1000",
-            planned_year="1993"
+            planned_year="2020",
+            category="Water",
+            description="Replace Deer Creek intake structure",
+            priority="4",
+            est_year="1993",
+            const_cost="2000"
         )
 
         project2 = Project(
             latitude=40.598168,
             longitude=-111.424055,
             facility_id="Jordanelle",
-            project="Reclamation",
+            project="Clean Water",
             cost="2000",
-            planned_year="1941"
+            planned_year="2020",
+            category="Stormwater",
+            description="Clean up Jordanelle",
+            priority="4",
+            est_year="1941",
+            const_cost="5000"
         )
 
         # Add the projects to the session, commit, and close
