@@ -1,5 +1,4 @@
 function saveDataToDB () {
-    console.log("In the JS")
 
     var facility_id = document.getElementById('modal-facility-id').innerHTML
 
@@ -21,21 +20,12 @@ function saveDataToDB () {
 
     };
 
-    console.log("Name")
-    console.log(proj_name_list)
-    console.log("Cost")
-    console.log(proj_cost_list)
-    console.log("Year")
-    console.log(proj_year_list)
 
     var data = new FormData();
 
-    var json_proj_name_list = JSON.stringify(project_name_list);
+    var json_proj_name_list = JSON.stringify(proj_name_list);
     var json_proj_cost_list = JSON.stringify(proj_cost_list);
     var json_proj_year_list = JSON.stringify(proj_year_list);
-
-    console.log("JSON Name")
-    console.log(json_proj_name_list)
 
     data.append("project_name_list",json_proj_name_list);
     data.append("project_cost_list",json_proj_cost_list);
@@ -183,16 +173,17 @@ function stopEditRow (row_num){
 };
 
 function addProjectRow (){
+    console.log("In Add Project Row")
 
     var html = '';
 
-        var nrows = document.querySelectorAll('.submit-delete-region');
+        var nrows = document.querySelectorAll('.project-name');
         numrows = nrows.length;
         console.log(numrows);
         i = numrows;
 
         html += '<tr id="row-'+(i+1)+'">'+
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-name" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="edit-fields project-name" type="text" id="' + (i+1) +'-project-name" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-cost" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-year" value="" ></td>' +
                     '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+

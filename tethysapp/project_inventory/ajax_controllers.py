@@ -1,6 +1,7 @@
 from .model import Project, add_new_project, get_all_projects
 from django.http import JsonResponse, HttpResponse, Http404
 from .app import ProjectInventory as app
+import json
 
 def get_project_list (request):
     if request.is_ajax() and request.method == 'POST':
@@ -29,17 +30,12 @@ def get_project_list (request):
 
 def save_updates_to_db (request):
     return_obj = {}
-    print("I wonder what this function does")
     if request.is_ajax() and request.method == 'POST':
         fac_id = request.POST['facility_id']
-        project_name_list = request.POST['project_name_list']
-        project_cost_list = request.POST['project_cost_list']
-        project_year_list = request.POST['project_year_list']
-
-        print(project_name_list[0])
-        print(project_name_list)
-        print(project_cost_list)
-        print(project_year_list)
+        project_name_string = request.POST['project_name_list']
+        project_name_list = json.loads(project_name_string)
+        project_cost_list = json.loads(request.POST['project_cost_list'])
+        project_year_list = json.loads(request.POST['project_year_list'])
 
         # Get connection/session to database
         Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
@@ -51,10 +47,7 @@ def save_updates_to_db (request):
                 latitude = project.latitude
                 longitude = project.longitude
                 session.delete(project)
-        print(range(len(project_name_list)))
-        print(project_name_list)
-        print(project_cost_list)
-        print(project_year_list)
+
         for i in range(len(project_name_list)):
             # Create new Project record
             new_project = Project(
@@ -67,9 +60,9 @@ def save_updates_to_db (request):
             )
             session.add(new_project)
 
-            # Commit the session and close the connection
-            session.commit()
-            session.close()
+        # Commit the session and close the connection
+        session.commit()
+        session.close()
 
 
             # num_existing_projects = fac_projname_list.len

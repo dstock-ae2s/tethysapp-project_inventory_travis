@@ -301,7 +301,7 @@ def list_projects(request):
     projects_table = DataTableView(
         column_names=('Facility ID', 'Project', 'Cost', 'Planned Year'),
         rows=table_rows,
-        searching=False,
+        searching=True,
         orderClasses=False,
         lengthMenu=[[10, 25, 50, -1], [10, 25, 50, "All"]],
     )
