@@ -8,7 +8,7 @@ from tethys_sdk.gizmos import (Button, MapView, TextInput, DatePicker,
 from tethys_sdk.permissions import permission_required, has_permission
 from .model import Project, add_new_project, get_all_projects
 from .app import ProjectInventory as app
-from .helpers import create_bargraph, create_piechart
+from .helpers import create_bargraph, create_piechart, create_sunburst
 import numpy as np
 
 
@@ -426,6 +426,7 @@ def add_project(request):
     cost_input = TextInput(
         display_text='Estimated Cost',
         name='cost',
+        attributes={'id': 'add_project_estcost'},
         initial=cost,
         error=cost_error
     )
@@ -440,6 +441,7 @@ def add_project(request):
     const_cost_input = TextInput(
         display_text='Construction Cost',
         name='const_cost',
+        attributes={'id': 'add_project_constcost'},
         initial=const_cost,
         error=const_cost_error
     )
@@ -588,10 +590,12 @@ def graphs(request):
 
     bargraph_plot = create_bargraph()
     piechart_plot = create_piechart()
+    sunburst_plot = create_sunburst()
 
     context = {
         'bargraph_plot': bargraph_plot,
         'piechart_plot': piechart_plot,
+        'sunburst_plot': sunburst_plot,
         'can_add_projects': has_permission(request, 'add_projects')
     }
 
