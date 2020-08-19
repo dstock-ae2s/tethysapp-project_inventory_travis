@@ -102,8 +102,8 @@ def init_primary_db(engine, first_time):
             longitude=-111.529133,
             facility_id="Deer Creek",
             project="Reclamation",
-            cost="Provo River",
-            planned_year="April 12, 1993"
+            cost="1000",
+            planned_year="1993"
         )
 
         project2 = Project(
@@ -111,7 +111,7 @@ def init_primary_db(engine, first_time):
             longitude=-111.424055,
             facility_id="Jordanelle",
             project="Reclamation",
-            cost="Provo River",
+            cost="2000",
             planned_year="1941"
         )
 

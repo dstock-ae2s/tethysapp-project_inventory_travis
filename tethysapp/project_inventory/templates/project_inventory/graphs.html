@@ -1,0 +1,7 @@
+{% extends "project_inventory/base.html" %}
+{% load tethys_gizmos %}
+
+{% block app_content %}
+    {% gizmo bargraph_plot %}
+    {% gizmo piechart_plot %}
+{% endblock %}

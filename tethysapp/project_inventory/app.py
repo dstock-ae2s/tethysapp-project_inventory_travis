@@ -8,9 +8,9 @@ class ProjectInventory(TethysAppBase):
     Tethys app class for Project Inventory.
     """
 
-    name = 'Project Inventory'
+    name = 'Watford City Capital Improvements Plan'
     index = 'project_inventory:home'
-    icon = 'project_inventory/images/dam_icon.png'
+    icon = 'project_inventory/images/watfordLogo.jpg'
     package = 'project_inventory'
     root_url = 'project-inventory'
     color = '#244C96'
@@ -50,6 +50,11 @@ class ProjectInventory(TethysAppBase):
                 name='save-updates-to-db',
                 url='project-inventory/save-updates-to-db',
                 controller='project_inventory.ajax_controllers.save_updates_to_db'
+            ),
+            UrlMap(
+                name='graphs',
+                url='project-inventory/graphs',
+                controller='project_inventory.controllers.graphs'
             ),
         )
 

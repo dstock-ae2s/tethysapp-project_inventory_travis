@@ -16,6 +16,10 @@
     height: 100%;
 }
 
+.modal-body {
+    overflow-x: auto;
+}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -39,6 +43,7 @@ tr:nth-child(even) {
 
 #map-popup-modal {
   width:90%;
+  max-width: 100%;
 }
 .btn {
   margin:10px;

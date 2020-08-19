@@ -1,39 +1,50 @@
-function saveDataToDB() {
+function saveDataToDB () {
+    console.log("In the JS")
 
+    var facility_id = document.getElementById('modal-facility-id').innerHTML
 
-        var facility_id = document.getElementById('modal-facility-id').innerHTML
+    var proj_name_list = [];
+    var proj_cost_list = [];
+    var proj_year_list = [];
 
-        var proj_name_list = [];
-        var proj_cost_list = [];
-        var proj_year_list = [];
+    var project_names = document.querySelectorAll('.project-name');
 
-        var project_names = document.querySelectorAll('.project-name-cell');
+    for (var i = 1; i <= project_names.length; i++) {
 
-        for (var i = 0; i < project_names.length; i++) {
+        project_name = document.getElementById( i+'-project-name').value;
+        cost = document.getElementById(i+'-project-cost').value;
+        planned_year = document.getElementById(i+'-project-year').value;
 
-            project_name = document.getElementById( i+'-project-name').value;
-            cost = document.getElementById(i+'project-cost').value;
-            planned_year = document.getElementById(i+'-project-year').value;
+        proj_name_list.push(project_name);
+        proj_cost_list.push(cost);
+        proj_year_list.push(planned_year);
 
-            proj_name_list.push(project_name);
-            proj_cost_list.push(cost);
-            proj_year_list.push(planned_year);
+    };
 
-        };
+    console.log("Name")
+    console.log(proj_name_list)
+    console.log("Cost")
+    console.log(proj_cost_list)
+    console.log("Year")
+    console.log(proj_year_list)
 
-        var data = new FormData();
+    var data = new FormData();
 
-        var json_proj_name_list = JSON.stringify(project_name_list);
-        var json_proj_cost_list = JSON.stringify(proj_cost_list);
-        var json_proj_year_list = JSON.stringify(proj_year_list);
+    var json_proj_name_list = JSON.stringify(project_name_list);
+    var json_proj_cost_list = JSON.stringify(proj_cost_list);
+    var json_proj_year_list = JSON.stringify(proj_year_list);
 
-        data.append("project_name_list",json_proj_name_list);
-        data.append("project_cost_list",json_proj_cost_list);
-        data.append("project_year_list",json_proj_year_list);
+    console.log("JSON Name")
+    console.log(json_proj_name_list)
 
-        var save_updates_to_db = ajax_update_database_with_file("save-updates-to-db", data); //Submitting the data through the ajax function, see main.js for the helper function.
-        save_updates_to_db.done(function(return_data){ //Reset the form once the data is added successfully
-        });
+    data.append("project_name_list",json_proj_name_list);
+    data.append("project_cost_list",json_proj_cost_list);
+    data.append("project_year_list",json_proj_year_list);
+    data.append("facility_id", facility_id);
+
+    var save_updates_to_db = ajax_update_database_with_file("save-updates-to-db", data); //Submitting the data through the ajax function, see main.js for the helper function.
+    save_updates_to_db.done(function(return_data){ //Reset the form once the data is added successfully
+    });
 
 
 };
@@ -87,7 +98,7 @@ $(function() {
 
 
                 html += '<tr id="row-'+(i+1)+'">'+
-                            '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-name" value="'+ project_name_list[i] + '" disabled></td>' +
+                            '<td><input class="edit-fields project-name" type="text" id="' + (i+1) +'-project-name" value="'+ project_name_list[i] + '" disabled></td>' +
                             '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-cost" value="'+ project_cost_list[i] + '" disabled></td>' +
                             '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-year" value="'+ planned_year_list[i] + '" disabled></td>' +
                             '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+

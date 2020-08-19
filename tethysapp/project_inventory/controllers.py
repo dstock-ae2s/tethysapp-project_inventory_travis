@@ -8,6 +8,7 @@ from tethys_sdk.gizmos import (Button, MapView, TextInput, DatePicker,
 from tethys_sdk.permissions import permission_required, has_permission
 from .model import Project, add_new_project, get_all_projects
 from .app import ProjectInventory as app
+from .helpers import create_bargraph, create_piechart
 
 
 @login_required()
@@ -216,7 +217,7 @@ def add_project(request):
         name='planned_year',
         display_text='Planned Year',
         autoclose=True,
-        format='MM d, yyyy',
+        format='yyyy',
         start_view='decade',
         today_button=True,
         initial=planned_year,
@@ -311,3 +312,24 @@ def list_projects(request):
     }
 
     return render(request, 'project_inventory/list_projects.html', context)
+
+@login_required()
+def graphs(request):
+    """
+    Controller for the Plots Page.
+    """
+    # Get projects from database
+    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+    session = Session()
+
+    bargraph_plot = create_bargraph()
+    piechart_plot = create_piechart()
+
+    context = {
+        'bargraph_plot': bargraph_plot,
+        'piechart_plot': piechart_plot,
+        'can_add_projects': has_permission(request, 'add_projects')
+    }
+
+    session.close()
+    return render(request, 'project_inventory/graphs.html', context)

@@ -16,11 +16,13 @@
   {% url 'project_inventory:home' as home_url %}
   {% url 'project_inventory:add_project' as add_project_url %}
   {% url 'project_inventory:projects' as list_project_url %}
+  {% url 'project_inventory:graphs' as graph_url %}
   <li class="title">Navigation</li>
   <li class="{% if request.path == home_url %}active{% endif %}"><a href="{{ home_url }}">Home</a></li>
   <li class="{% if request.path == list_project_url %}active{% endif %}"><a href="{{ list_project_url }}">Projects</a></li>
+  <li class="{% if request.path == graph_url %}active{% endif %}"><a href="{{ graph_url }}">Plots</a></li>
   {% if can_add_projects %}
-  <li class="{% if request.path == add_project_url %}active{% endif %}"><a href="{{ add_project_url }}">Add Project</a></li>
+  <li class="{% if request.path == add_project_url %}active{% endif %}"><a href="{{ add_project_url }}">Add Facility</a></li>
   {% endif %}
 {% endblock %}
 
