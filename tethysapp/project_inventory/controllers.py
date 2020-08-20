@@ -43,8 +43,8 @@ def home(request):
                 'id': project.id,
                 'facility_id': project.facility_id,
                 'project': project.project,
-                'cost': project.cost,
-                'planned_year': project.planned_year,
+                'est_cost': project.est_cost,
+                'const_year': project.const_year,
                 'category': project.category,
                 'description': project.description,
                 'priority': project.priority,
@@ -309,8 +309,8 @@ def add_project(request):
     # Default Values
     facility_id = ''
     project = ''
-    cost = ''
-    planned_year = ''
+    est_cost = ''
+    const_year = ''
     location = ''
     category = ''
     description = ''
@@ -324,8 +324,8 @@ def add_project(request):
     # Errors
     facility_id_error = ''
     project_error = ''
-    cost_error = ''
-    date_error = ''
+    est_cost_error = ''
+    const_year_error = ''
     location_error = ''
     category_error = ''
     description_error = ''
@@ -339,8 +339,8 @@ def add_project(request):
         has_errors = False
         facility_id = request.POST.get('facility_id', None)
         project = request.POST.get('project', None)
-        cost = request.POST.get('cost', None)
-        planned_year = request.POST.get('planned_year', None)
+        est_cost = request.POST.get('est_cost', None)
+        const_year = request.POST.get('const_year', None)
         location = request.POST.get('geometry', None)
         category = request.POST.get('category', None)
         description = request.POST.get('description', None)
@@ -360,13 +360,13 @@ def add_project(request):
             has_errors = True
             project_error = 'Project Name is required.'
 
-        if not cost:
+        if not est_cost:
             has_errors = True
-            cost_error = 'Cost is required.'
+            est_cost_error = 'Cost is required.'
 
-        if not planned_year:
+        if not const_year:
             has_errors = True
-            date_error = 'Planned Year is required.'
+            const_year_error = 'Planned Year is required.'
 
         if not location:
             has_errors = True
@@ -403,7 +403,7 @@ def add_project(request):
 
             # Only add the project if custom setting doesn't exist or we have not exceed max_projects
             if not max_projects or num_projects < max_projects:
-                add_new_project(location=location, facility_id=facility_id, project=project, cost=cost, planned_year=planned_year, category=category, description=description, priority=priority, est_year=est_year, const_cost=const_cost, debt_checkbox_val=debt_checked, recur_checkbox_val=recur_checked)
+                add_new_project(location=location, facility_id=facility_id, project=project, est_cost=est_cost, const_year=const_year, category=category, description=description, priority=priority, est_year=est_year, const_cost=const_cost, debt_checkbox_val=debt_checked, recur_checkbox_val=recur_checked)
             else:
                 messages.warning(request, 'Unable to add project "{0}", because the inventory is full.'.format(facility_id))
 
@@ -426,12 +426,12 @@ def add_project(request):
         error=project_error
     )
 
-    cost_input = TextInput(
+    est_cost_input = TextInput(
         display_text='Estimated Cost',
-        name='cost',
-        attributes={'id': 'add_project_estcost'},
-        initial=cost,
-        error=cost_error
+        name='est_cost',
+        attributes={'id':'add_project_estcost'},
+        initial=est_cost,
+        error=est_cost_error
     )
 
     description_input = TextInput(
@@ -452,19 +452,21 @@ def add_project(request):
     est_year_input = TextInput(
         display_text='Estimate Year',
         name='est_year',
+        attributes={'id': 'add_project_estyear'},
         initial=est_year,
         error=est_year_error
     )
 
-    planned_year_input = DatePicker(
-        name='planned_year',
+    const_year_input = DatePicker(
+        name='const_year',
         display_text='Construction Year',
+        attributes={'id': 'add_project_constyear'},
         autoclose=True,
         format='yyyy',
         start_view='decade',
         today_button=True,
-        initial=planned_year,
-        error=date_error
+        initial=const_year,
+        error=const_year_error
     )
 
     category_input = SelectInput(
@@ -531,8 +533,8 @@ def add_project(request):
     context = {
         'facility_id_input': facility_id_input,
         'project_input': project_input,
-        'cost_input': cost_input,
-        'planned_year_input': planned_year_input,
+        'est_cost_input': est_cost_input,
+        'const_year_input': const_year_input,
         'est_year_input': est_year_input,
         'category_input': category_input,
         'description_input': description_input,
@@ -545,7 +547,7 @@ def add_project(request):
         'can_add_projects': has_permission(request, 'add_projects')
     }
 
-    return render(request, 'project_inventory/add_project.html', context)
+    return render(request, 'project_inventory/add_facility.html', context)
 
 
 # @login_required()
@@ -562,8 +564,8 @@ def list_projects(request):
             (
                 project.facility_id, project.category,
                 project.project, project.description, project.priority,
-                project.est_year, project.cost[0],
-                project.planned_year, project.const_cost,
+                project.est_year, project.est_cost[0],
+                project.const_year, project.const_cost,
             )
         )
 

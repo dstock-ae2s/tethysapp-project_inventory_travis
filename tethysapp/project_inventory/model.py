@@ -34,17 +34,17 @@ class Project(Base):
     facility_id = Column(String)
     project = Column(String)
     est_year = Column(String)
-    cost = Column(String)
+    est_cost = Column(String)
     category = Column(String)
     description = Column(String)
     priority = Column(String)
-    planned_year = Column(String)
+    const_year = Column(String)
     const_cost = Column(ARRAY(String))
     debt_checkbox_val = Column(String)
     recur_checkbox_val = Column(String)
 
 
-def add_new_project(location, facility_id, project, cost, planned_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
+def add_new_project(location, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
     """
     Persist new project.
     """
@@ -62,14 +62,14 @@ def add_new_project(location, facility_id, project, cost, planned_year, category
     cost_array = []
     cost_array.append(const_cost)
     print(debt_checkbox_val)
-    if debt_checkbox_val ==True:
+    if debt_checkbox_val == "true":
         annual_payment = float(const_cost) * (
                 (interest_rate * (1 + interest_rate) ** (pay_period)) / (
                 (1 + interest_rate) ** (pay_period) - 1))
         for _ in range(pay_period-1):
-            cost_array.append(annual_payment)
+            cost_array.append(round(annual_payment),2)
 
-    elif recur_checkbox_val == True:
+    elif recur_checkbox_val == "true":
         annual_payment = float(const_cost)
         for j in range(recur_years):
             annual_payment = annual_payment * (inflation_rate + 1)
@@ -82,11 +82,11 @@ def add_new_project(location, facility_id, project, cost, planned_year, category
         facility_id=facility_id,
         project=project,
         est_year=est_year,
-        cost=cost,
+        est_cost=est_cost,
         category=category,
         description=description,
         priority=priority,
-        planned_year=planned_year,
+        const_year=const_year,
         const_cost=cost_array,
         debt_checkbox_val= debt_checkbox_val,
         recur_checkbox_val= recur_checkbox_val,
@@ -137,13 +137,13 @@ def init_primary_db(engine, first_time):
             longitude=-111.529133,
             facility_id="Deer Creek",
             project="New Intake",
-            cost=["1000"],
-            planned_year="2022",
+            est_cost="1000",
+            const_year="2022",
             category="Water",
             description="Replace Deer Creek intake structure",
             priority="4",
             est_year="2020",
-            const_cost="2000",
+            const_cost=["2000"],
             debt_checkbox_val=True,
             recur_checkbox_val=False,
 
@@ -154,13 +154,13 @@ def init_primary_db(engine, first_time):
             longitude=-111.424055,
             facility_id="Jordanelle",
             project="Clean Water",
-            cost=["2000"],
-            planned_year="2023",
+            est_cost="2000",
+            const_year="2023",
             category="Stormwater",
             description="Clean up Jordanelle",
             priority="4",
             est_year="2020",
-            const_cost="5000",
+            const_cost=["5000"],
             debt_checkbox_val=False,
             recur_checkbox_val=True,
         )

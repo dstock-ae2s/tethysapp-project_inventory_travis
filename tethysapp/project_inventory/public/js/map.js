@@ -3,8 +3,8 @@ function saveDataToDB () {
     var facility_id = document.getElementById('modal-facility-id').innerHTML
 
     var proj_name_list = [];
-    var proj_cost_list = [];
-    var proj_year_list = [];
+    var proj_est_cost_list = [];
+    var proj_const_year_list = [];
     var proj_category_list = [];
     var proj_description_list = [];
     var proj_priority_list = [];
@@ -18,8 +18,8 @@ function saveDataToDB () {
     for (var i = 1; i <= project_names.length; i++) {
 
         project_name = document.getElementById( i+'-project-name').value;
-        cost = document.getElementById(i+'-project-cost').value;
-        planned_year = document.getElementById(i+'-project-year').value;
+        est_cost = document.getElementById(i+'-project-estcost').value;
+        const_year = document.getElementById(i+'-project-constyear').value;
         category = document.getElementById(i+'-project-category').value;
         description = document.getElementById(i+'-project-description').value;
         priority = document.getElementById(i+'-project-priority').value;
@@ -40,8 +40,8 @@ function saveDataToDB () {
         }
 
         proj_name_list.push(project_name);
-        proj_cost_list.push(cost);
-        proj_year_list.push(planned_year);
+        proj_est_cost_list.push(est_cost);
+        proj_const_year_list.push(const_year);
         proj_category_list.push(category);
         proj_description_list.push(description);
         proj_priority_list.push(priority);
@@ -56,8 +56,8 @@ function saveDataToDB () {
     var data = new FormData();
 
     var json_proj_name_list = JSON.stringify(proj_name_list);
-    var json_proj_cost_list = JSON.stringify(proj_cost_list);
-    var json_proj_year_list = JSON.stringify(proj_year_list);
+    var json_proj_est_cost_list = JSON.stringify(proj_est_cost_list);
+    var json_proj_const_year_list = JSON.stringify(proj_const_year_list);
     var json_proj_category_list = JSON.stringify(proj_category_list);
     var json_proj_description_list = JSON.stringify(proj_description_list);
     var json_proj_priority_list = JSON.stringify(proj_priority_list);
@@ -67,8 +67,8 @@ function saveDataToDB () {
     var json_recur_checkbox_list = JSON.stringify(recur_checkbox_list);
 
     data.append("project_name_list",json_proj_name_list);
-    data.append("project_cost_list",json_proj_cost_list);
-    data.append("project_year_list",json_proj_year_list);
+    data.append("project_est_cost_list",json_proj_est_cost_list);
+    data.append("project_const_year_list",json_proj_const_year_list);
     data.append("project_category_list",json_proj_category_list);
     data.append("project_description_list",json_proj_description_list);
     data.append("project_priority_list",json_proj_priority_list);
@@ -117,19 +117,19 @@ $(function() {
             get_project_list.done(function(return_data){
 
                 if("est_year" in return_data){
-                    project_est_year = return_data.est_year;
+                    project_est_year_list = return_data.est_year;
                 };
 
                 if("project_name" in return_data){
                     project_name_list = return_data.project_name;
                 };
 
-                if("cost" in return_data){
-                    project_cost_list = return_data.cost;
+                if("est_cost" in return_data){
+                    project_est_cost_list = return_data.est_cost;
                 };
 
-                if("planned_year" in return_data){
-                    planned_year_list = return_data.planned_year;
+                if("const_year" in return_data){
+                    project_const_year_list = return_data.const_year;
                 };
 
                 if("category" in return_data){
@@ -181,9 +181,9 @@ $(function() {
                                 '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-category" value="'+ project_category_list[i] + '" disabled></td>' +
                                 '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-priority" value="'+ project_priority_list[i] + '" disabled></td>' +
                                 '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-description" value="'+ project_description_list[i] + '" disabled></td>' +
-                                '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-estyear" value="'+ project_est_year + '" disabled></td>' +
-                                '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-cost" value="'+ project_cost_list[i] + '" disabled></td>' +
-                                '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-year" value="'+ planned_year_list[i] + '" disabled></td>' +
+                                '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-estyear" value="'+ project_est_year_list[i] + '" disabled></td>' +
+                                '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-estcost" value="'+ project_est_cost_list[i] + '" disabled></td>' +
+                                '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-constyear" value="'+ project_const_year_list[i] + '" disabled></td>' +
                                 '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="'+ project_const_cost_list[i] + '" disabled></td>' +
                                 '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox"'+ debt_is_checked + 'disabled></td>' +
                                 '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox"'+ recur_is_checked + 'disabled></td>' +
@@ -232,11 +232,11 @@ function editRow (row_num){
     document.getElementById(row_num+'-project-name').disabled = false;
     document.getElementById(row_num+'-project-name').style.border = '1px solid';
 
-    document.getElementById(row_num+'-project-cost').disabled = false;
-    document.getElementById(row_num+'-project-cost').style.border = '1px solid';
+    document.getElementById(row_num+'-project-estcost').disabled = false;
+    document.getElementById(row_num+'-project-estcost').style.border = '1px solid';
 
-    document.getElementById(row_num+'-project-year').disabled = false;
-    document.getElementById(row_num+'-project-year').style.border = '1px solid';
+    document.getElementById(row_num+'-project-constyear').disabled = false;
+    document.getElementById(row_num+'-project-constyear').style.border = '1px solid';
 
     document.getElementById(row_num+'-project-category').disabled = false;
     document.getElementById(row_num+'-project-category').style.border = '1px solid';
@@ -258,6 +258,25 @@ function editRow (row_num){
 
     document.getElementById(row_num+'-recur-checkbox').disabled = false;
     document.getElementById(row_num+'-recur-checkbox').style.border = '1px solid';
+
+    $('#'+row_num+'-project-estyear').change(function(){
+        this_est_cost = parseFloat(document.getElementById(row_num+'-project-estcost').value)
+        this_const_year = parseFloat(document.getElementById(row_num+'-project-constyear').value)
+        this_est_year = parseFloat(document.getElementById(row_num+'-project-estyear').value)
+        document.getElementById(row_num+'-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
+    });
+    $('#'+row_num+'-project-estcost').change(function(){
+        this_est_cost = parseFloat(document.getElementById(row_num+'-project-estcost').value)
+        this_const_year = parseFloat(document.getElementById(row_num+'-project-constyear').value)
+        this_est_year = parseFloat(document.getElementById(row_num+'-project-estyear').value)
+        document.getElementById(row_num+'-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
+    });
+    $('#'+row_num+'-project-constyear').change(function(){
+        this_est_cost = parseFloat(document.getElementById(row_num+'-project-estcost').value)
+        this_const_year = parseFloat(document.getElementById(row_num+'-project-constyear').value)
+        this_est_year = parseFloat(document.getElementById(row_num+'-project-estyear').value)
+        document.getElementById(row_num+'-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
+    });
 
 };
 
@@ -281,11 +300,11 @@ function stopEditRow (row_num){
     document.getElementById(row_num+'-project-name').disabled = true;
     document.getElementById(row_num+'-project-name').style.border = 'none';
 
-    document.getElementById(row_num+'-project-cost').disabled = true;
-    document.getElementById(row_num+'-project-cost').style.border = 'none';
+    document.getElementById(row_num+'-project-estcost').disabled = true;
+    document.getElementById(row_num+'-project-estcost').style.border = 'none';
 
-    document.getElementById(row_num+'-project-year').disabled = true;
-    document.getElementById(row_num+'-project-year').style.border = 'none';
+    document.getElementById(row_num+'-project-constyear').disabled = true;
+    document.getElementById(row_num+'-project-constyear').style.border = 'none';
 
     document.getElementById(row_num+'-project-category').disabled = true;
     document.getElementById(row_num+'-project-category').style.border = 'none';
@@ -325,8 +344,8 @@ function addProjectRow (){
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-priority" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-description" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-estyear" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-cost" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-year" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-estcost" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constyear" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="" ></td>' +
                     '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox" ></td>' +
                     '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox" ></td>' +

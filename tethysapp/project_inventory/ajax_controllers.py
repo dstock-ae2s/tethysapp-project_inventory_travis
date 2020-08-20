@@ -12,8 +12,8 @@ def get_project_list (request):
 
         return_obj = {}
         fac_projname_list = []
-        fac_projcost_list = []
-        fac_projyear_list = []
+        fac_projestcost_list = []
+        fac_projconstyear_list = []
         fac_projcategory_list = []
         fac_projdescription_list = []
         fac_projpriority_list = []
@@ -26,8 +26,8 @@ def get_project_list (request):
         for project in project_list:
             if project.facility_id == fac_id:
                 fac_projname_list.append(project.project)
-                fac_projcost_list.append(project.cost)
-                fac_projyear_list.append(project.planned_year)
+                fac_projestcost_list.append(project.est_cost)
+                fac_projconstyear_list.append(project.const_year)
                 fac_projcategory_list.append(project.category)
                 fac_projdescription_list.append(project.description)
                 fac_projpriority_list.append(project.priority)
@@ -37,8 +37,8 @@ def get_project_list (request):
                 fac_recur_checkbox_list.append(project.recur_checkbox_val)
 
         return_obj["project_name"] = fac_projname_list
-        return_obj["cost"] = fac_projcost_list
-        return_obj["planned_year"] = fac_projyear_list
+        return_obj["est_cost"] = fac_projestcost_list
+        return_obj["const_year"] = fac_projconstyear_list
         return_obj["category"] = fac_projcategory_list
         return_obj["description"] = fac_projdescription_list
         return_obj["priority"] = fac_projpriority_list
@@ -63,18 +63,18 @@ def save_updates_to_db (request):
         fac_id = request.POST['facility_id']
         project_name_string = request.POST['project_name_list']
         project_name_list = json.loads(project_name_string)
-        project_cost_list = json.loads(request.POST['project_cost_list'])
-        project_year_list = json.loads(request.POST['project_year_list'])
+        project_est_cost_list = json.loads(request.POST['project_est_cost_list'])
+        project_const_year_list = json.loads(request.POST['project_const_year_list'])
         project_category_list = json.loads(request.POST['project_category_list'])
         project_description_list = json.loads(request.POST['project_description_list'])
         project_priority_list = json.loads(request.POST['project_priority_list'])
-        project_est_year = json.loads(request.POST['project_est_year_list'])
+        project_est_year_list = json.loads(request.POST['project_est_year_list'])
         project_const_cost_list = json.loads(request.POST['project_const_cost_list'])
         debt_checkbox_list = json.loads(request.POST['debt_checkbox_list'])
         recur_checkbox_list = json.loads(request.POST['recur_checkbox_list'])
 
 
-        print(project_cost_list)
+        print(project_est_cost_list)
         # Get connection/session to database
         Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
         session = Session()
@@ -102,23 +102,23 @@ def save_updates_to_db (request):
             elif recur_checkbox_list[i] == True:
                 annual_payment = float(project_const_cost_list[i])
                 for j in range(recur_years):
-                    annual_payment = annual_payment * (inflation_rate +1)
+                    annual_payment = annual_payment * ((inflation_rate+1)**j)
                     cost_array.append(round(annual_payment))
                     print(annual_payment)
 
-            print(project_cost_list[i])
+            print(project_est_cost_list[i])
             # Create new Project record
             new_project = Project(
                 latitude=latitude,
                 longitude=longitude,
                 facility_id=fac_id,
                 project=project_name_list[i],
-                cost=project_cost_list[i],
-                planned_year=project_year_list[i],
+                est_cost=project_est_cost_list[i],
+                const_year=project_const_year_list[i],
                 category=project_category_list[i],
                 description=project_description_list[i],
                 priority=project_priority_list[i],
-                est_year=project_est_year[i],
+                est_year=project_est_year_list[i],
                 const_cost=cost_array,
                 debt_checkbox_val=debt_checkbox_list[i],
                 recur_checkbox_val=recur_checkbox_list[i],

@@ -25,16 +25,16 @@ def create_bargraph(height='520 px', width='100%'):
         if project.debt_checkbox_val == "true":
             z =1
             for c in range(len(project.const_cost)-1):
-                df = df.append({'Construction Year': int(project.planned_year) + z, 'Projected Cost': int(json.loads(project.const_cost[c+1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
+                df = df.append({'Construction Year': int(project.const_year) + z, 'Projected Cost': int(json.loads(project.const_cost[c + 1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
                 z = z+1
         elif project.recur_checkbox_val == "true":
             y = 0
             for x in range(len(project.const_cost)-1):
 
-                df = df.append({'Construction Year': int(project.planned_year) + y, 'Projected Cost': int(json.loads(project.const_cost[x+1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
+                df = df.append({'Construction Year': int(project.const_year) + y, 'Projected Cost': int(json.loads(project.const_cost[x + 1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
                 y = y+1
         else:
-            df = df.append({'Construction Year': int(project.planned_year), 'Projected Cost': int(json.loads(project.const_cost[0])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
+            df = df.append({'Construction Year': int(project.const_year), 'Projected Cost': int(json.loads(project.const_cost[0])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
 
 
     # Build up Plotly plot
@@ -72,19 +72,19 @@ def create_piechart(height='520 px', width='100%'):
         if project.debt_checkbox_val == "true":
             z = 1
             for c in range(len(project.const_cost)-1):
-                df = df.append({'Construction Year': int(project.planned_year) + z, 'Projected Cost': int(json.loads(project.const_cost[c+1])),
+                df = df.append({'Construction Year': int(project.const_year) + z, 'Projected Cost': int(json.loads(project.const_cost[c + 1])),
                                 'Facility ID': project.facility_id, 'Project': project.project,
                                 'Category': project.category}, ignore_index=True)
                 z = z+1
         elif project.recur_checkbox_val == "true":
             y = 0
             for x in range(len(project.const_cost)-1):
-                df = df.append({'Construction Year': int(project.planned_year)+y, 'Projected Cost': int(json.loads(project.const_cost[x+1])),
+                df = df.append({'Construction Year': int(project.const_year) + y, 'Projected Cost': int(json.loads(project.const_cost[x + 1])),
                                 'Facility ID': project.facility_id, 'Project': project.project,
                                 'Category': project.category}, ignore_index=True)
                 y = y+1
         else:
-            df = df.append({'Construction Year': int(project.planned_year), 'Projected Cost': int(json.loads(project.const_cost[0])),
+            df = df.append({'Construction Year': int(project.const_year), 'Projected Cost': int(json.loads(project.const_cost[0])),
                             'Facility ID': project.facility_id, 'Project': project.project,
                             'Category': project.category}, ignore_index=True)
 
@@ -117,15 +117,15 @@ def create_sunburst(height='520 px', width='100%'):
         if project.debt_checkbox_val == "true":
             z = 1
             for c in range(len(project.const_cost)-1):
-                df=df.append({'Construction Year': int(project.planned_year)+z, 'Projected Cost': int(json.loads(project.const_cost[c+1])), 'Facility ID': project.facility_id, 'Project':project.project, 'Category':project.category}, ignore_index=True)
+                df=df.append({'Construction Year': int(project.const_year) + z, 'Projected Cost': int(json.loads(project.const_cost[c + 1])), 'Facility ID': project.facility_id, 'Project':project.project, 'Category':project.category}, ignore_index=True)
                 z=z+1
         elif project.recur_checkbox_val == "true":
             y=0
             for x in range(len(project.const_cost)-1):
-                df = df.append({'Construction Year': int(project.planned_year)+y, 'Projected Cost': int(json.loads(project.const_cost[x+1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
+                df = df.append({'Construction Year': int(project.const_year) + y, 'Projected Cost': int(json.loads(project.const_cost[x + 1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
                 y=y+1
         else:
-            df = df.append({'Construction Year': int(project.planned_year), 'Projected Cost': int(json.loads(project.const_cost[0])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
+            df = df.append({'Construction Year': int(project.const_year), 'Projected Cost': int(json.loads(project.const_cost[0])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
 
     # Build up Plotly plot
     sunburst_px = px.sunburst(

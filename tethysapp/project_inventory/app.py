@@ -10,7 +10,7 @@ class ProjectInventory(TethysAppBase):
 
     name = 'Watford City Capital Improvements Plan'
     index = 'project_inventory:home'
-    icon = 'project_inventory/images/watfordLogo.jpg'
+    icon = 'project_inventory/images/Watford_City_Logo-white.png'
     package = 'project_inventory'
     root_url = 'project-inventory'
     color = '#244C96'
