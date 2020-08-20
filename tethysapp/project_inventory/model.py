@@ -33,16 +33,18 @@ class Project(Base):
     longitude = Column(Float)
     facility_id = Column(String)
     project = Column(String)
-    cost = Column(ARRAY(String))
-    planned_year = Column(String)
+    est_year = Column(String)
+    cost = Column(String)
     category = Column(String)
     description = Column(String)
     priority = Column(String)
-    est_year = Column(String)
-    const_cost = Column(String)
+    planned_year = Column(String)
+    const_cost = Column(ARRAY(String))
+    debt_checkbox_val = Column(String)
+    recur_checkbox_val = Column(String)
 
 
-def add_new_project(location, facility_id, project, cost, planned_year, category, description, priority, est_year, const_cost, checkbox):
+def add_new_project(location, facility_id, project, cost, planned_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
     """
     Persist new project.
     """
@@ -52,17 +54,26 @@ def add_new_project(location, facility_id, project, cost, planned_year, category
     longitude = location_geometry['coordinates'][0]
     latitude = location_geometry['coordinates'][1]
 
+    inflation_rate = 0.04
     interest_rate = 0.04
     pay_period = 20
+    recur_years = 20
 
     cost_array = []
-    cost_array.append(cost)
-    if checkbox=="true":
-        annual_payment = float(cost) * (
+    cost_array.append(const_cost)
+    print(debt_checkbox_val)
+    if debt_checkbox_val ==True:
+        annual_payment = float(const_cost) * (
                 (interest_rate * (1 + interest_rate) ** (pay_period)) / (
                 (1 + interest_rate) ** (pay_period) - 1))
         for _ in range(pay_period-1):
             cost_array.append(annual_payment)
+
+    elif recur_checkbox_val == True:
+        annual_payment = float(const_cost)
+        for j in range(recur_years):
+            annual_payment = annual_payment * (inflation_rate + 1)
+            cost_array.append(round(annual_payment, 2))
 
     # Create new Project record
     new_project = Project(
@@ -70,13 +81,15 @@ def add_new_project(location, facility_id, project, cost, planned_year, category
         longitude=longitude,
         facility_id=facility_id,
         project=project,
-        cost=cost_array,
-        planned_year=planned_year,
+        est_year=est_year,
+        cost=cost,
         category=category,
         description=description,
         priority=priority,
-        est_year=est_year,
-        const_cost=const_cost
+        planned_year=planned_year,
+        const_cost=cost_array,
+        debt_checkbox_val= debt_checkbox_val,
+        recur_checkbox_val= recur_checkbox_val,
     )
 
     # Get connection/session to database
@@ -125,12 +138,15 @@ def init_primary_db(engine, first_time):
             facility_id="Deer Creek",
             project="New Intake",
             cost=["1000"],
-            planned_year="2020",
+            planned_year="2022",
             category="Water",
             description="Replace Deer Creek intake structure",
             priority="4",
-            est_year="1993",
-            const_cost="2000"
+            est_year="2020",
+            const_cost="2000",
+            debt_checkbox_val=True,
+            recur_checkbox_val=False,
+
         )
 
         project2 = Project(
@@ -139,12 +155,14 @@ def init_primary_db(engine, first_time):
             facility_id="Jordanelle",
             project="Clean Water",
             cost=["2000"],
-            planned_year="2020",
+            planned_year="2023",
             category="Stormwater",
             description="Clean up Jordanelle",
             priority="4",
-            est_year="1941",
-            const_cost="5000"
+            est_year="2020",
+            const_cost="5000",
+            debt_checkbox_val=False,
+            recur_checkbox_val=True,
         )
 
         # Add the projects to the session, commit, and close

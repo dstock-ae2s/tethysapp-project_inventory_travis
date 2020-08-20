@@ -2,6 +2,8 @@ from tethys_gizmos.gizmo_options import PlotlyView
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+import json
+
 
 from .app import ProjectInventory as app
 from .model import Project
@@ -15,26 +17,40 @@ def create_bargraph(height='520 px', width='100%'):
     session = Session()
     projects = session.query(Project).all()
 
-    df = pd.DataFrame(columns=['Construction Year', 'Estimate Cost', 'Facility ID', 'Project', 'Category'])
+    df = pd.DataFrame(columns=['Construction Year', 'Projected Cost', 'Facility ID', 'Project', 'Category'])
 
     for project in projects:
-        df=df.append({'Construction Year': project.planned_year, 'Construction Cost': float(project.cost[0]), 'Facility ID': project.facility_id, 'Project':project.project, 'Category':project.category}, ignore_index=True)
+        print(project.debt_checkbox_val)
+        print(project.recur_checkbox_val)
+        if project.debt_checkbox_val == "true":
+            z =1
+            for c in range(len(project.const_cost)-1):
+                df = df.append({'Construction Year': int(project.planned_year) + z, 'Projected Cost': int(json.loads(project.const_cost[c+1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
+                z = z+1
+        elif project.recur_checkbox_val == "true":
+            y = 0
+            for x in range(len(project.const_cost)-1):
+
+                df = df.append({'Construction Year': int(project.planned_year) + y, 'Projected Cost': int(json.loads(project.const_cost[x+1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
+                y = y+1
+        else:
+            df = df.append({'Construction Year': int(project.planned_year), 'Projected Cost': int(json.loads(project.const_cost[0])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
 
 
     # Build up Plotly plot
     bargraph_px = px.bar(
         df,
-        hover_data=["Facility ID", "Project"],
+        hover_data=["Facility ID", "Project", "Projected Cost"],
         x="Construction Year",
-        y="Construction Cost",
+        y="Projected Cost",
         color="Category",
-        title="Future Project Costs"
+        # title="Future Project Costs"
     )
 
     bargraph_px.update_layout(
         yaxis=dict(title='Construction Cost (USD)',),
         xaxis=dict(title='Construction Year'),
-        legend=dict(title='Facility ID')
+        legend=dict(title='Category')
     )
 
     bargraph_plot = PlotlyView(bargraph_px, height=height, width=width)
@@ -50,17 +66,33 @@ def create_piechart(height='520 px', width='100%'):
     session = Session()
     projects = session.query(Project).all()
 
-    df = pd.DataFrame(columns=['Construction Year', 'Projected Cost', 'Facility ID', 'Project'])
+    df = pd.DataFrame(columns=['Construction Year', 'Projected Cost', 'Facility ID', 'Project', 'Category'])
 
     for project in projects:
-        df=df.append({'Construction Year': project.planned_year, 'Projected Cost': int(project.cost[0]), 'Facility ID': project.facility_id, 'Project':project.project}, ignore_index=True)
-
+        if project.debt_checkbox_val == "true":
+            z = 1
+            for c in range(len(project.const_cost)-1):
+                df = df.append({'Construction Year': int(project.planned_year) + z, 'Projected Cost': int(json.loads(project.const_cost[c+1])),
+                                'Facility ID': project.facility_id, 'Project': project.project,
+                                'Category': project.category}, ignore_index=True)
+                z = z+1
+        elif project.recur_checkbox_val == "true":
+            y = 0
+            for x in range(len(project.const_cost)-1):
+                df = df.append({'Construction Year': int(project.planned_year)+y, 'Projected Cost': int(json.loads(project.const_cost[x+1])),
+                                'Facility ID': project.facility_id, 'Project': project.project,
+                                'Category': project.category}, ignore_index=True)
+                y = y+1
+        else:
+            df = df.append({'Construction Year': int(project.planned_year), 'Projected Cost': int(json.loads(project.const_cost[0])),
+                            'Facility ID': project.facility_id, 'Project': project.project,
+                            'Category': project.category}, ignore_index=True)
 
     # Build up Plotly plot
     piechart_go = go.Figure(go.Pie(
         name="",
         values=df["Projected Cost"],
-        labels=df["Facility ID"],
+        labels=df["Category"],
         text=df["Project"],
         customdata=df["Construction Year"],
         hovertemplate="Facility ID: %{label} <br>Project: %{text} <br>Construction Year: %{customdata} <br>Cost: %{value}"
@@ -79,18 +111,33 @@ def create_sunburst(height='520 px', width='100%'):
     session = Session()
     projects = session.query(Project).all()
 
-    df = pd.DataFrame(columns=['Construction Year', 'Estimated Cost', 'Facility ID', 'Project', 'Category'])
+    df = pd.DataFrame(columns=['Construction Year', 'Projected Cost', 'Facility ID', 'Project', 'Category'])
 
     for project in projects:
-        df=df.append({'Construction Year': project.planned_year, 'Estimated Cost': int(project.cost[0]), 'Facility ID': project.facility_id, 'Project':project.project, 'Category':project.category}, ignore_index=True)
-
+        if project.debt_checkbox_val == "true":
+            z = 1
+            for c in range(len(project.const_cost)-1):
+                df=df.append({'Construction Year': int(project.planned_year)+z, 'Projected Cost': int(json.loads(project.const_cost[c+1])), 'Facility ID': project.facility_id, 'Project':project.project, 'Category':project.category}, ignore_index=True)
+                z=z+1
+        elif project.recur_checkbox_val == "true":
+            y=0
+            for x in range(len(project.const_cost)-1):
+                df = df.append({'Construction Year': int(project.planned_year)+y, 'Projected Cost': int(json.loads(project.const_cost[x+1])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
+                y=y+1
+        else:
+            df = df.append({'Construction Year': int(project.planned_year), 'Projected Cost': int(json.loads(project.const_cost[0])), 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category}, ignore_index=True)
 
     # Build up Plotly plot
     sunburst_px = px.sunburst(
         df,
-        path=['Category', 'Construction Year', 'Facility ID'],
-        values='Estimated Cost',
-        color='Project',
+        path=['Category', 'Facility ID','Project'],
+        values='Projected Cost',
+        color='Category',
+        labels=df["Category"],
+        # text=df["Project"],
+        # customdata=df["Construction Year"],
+        # hovertemplate="Facility ID: %{label} <br>Project: %{path[2]} <br>Construction Year: %{customdata} <br>Cost: %{value}"
+
     )
 
     sunburst_plot = PlotlyView(sunburst_px, height=height, width=width)

@@ -12,7 +12,7 @@ from .helpers import create_bargraph, create_piechart, create_sunburst
 import numpy as np
 
 
-@login_required()
+# @login_required()
 def home(request):
     """
     Controller for the app home page.
@@ -301,7 +301,7 @@ def home(request):
     return render(request, 'project_inventory/home.html', context)
 
 
-@permission_required('add_projects')
+# @permission_required('add_projects')
 def add_project(request):
     """
     Controller for the Add project page.
@@ -317,6 +317,8 @@ def add_project(request):
     priority = ''
     est_year = ''
     const_cost = ''
+    debt_checked = False
+    recur_checked = False
 
 
     # Errors
@@ -345,7 +347,8 @@ def add_project(request):
         priority = request.POST.get('priority', None)
         est_year = request.POST.get('est_year', None)
         const_cost = request.POST.get('const_cost', None)
-        checked = request.POST.get('add_project_checkbox')
+        debt_checked = request.POST.get('debt_add_project_checkbox', None)
+        recur_checked = request.POST.get('recur_add_project_checkbox', None)
 
 
         # Validate
@@ -400,7 +403,7 @@ def add_project(request):
 
             # Only add the project if custom setting doesn't exist or we have not exceed max_projects
             if not max_projects or num_projects < max_projects:
-                add_new_project(location=location, facility_id=facility_id, project=project, cost=cost, planned_year=planned_year, category=category, description=description, priority=priority, est_year=est_year, const_cost=const_cost, checkbox=checked)
+                add_new_project(location=location, facility_id=facility_id, project=project, cost=cost, planned_year=planned_year, category=category, description=description, priority=priority, est_year=est_year, const_cost=const_cost, debt_checkbox_val=debt_checked, recur_checkbox_val=recur_checked)
             else:
                 messages.warning(request, 'Unable to add project "{0}", because the inventory is full.'.format(facility_id))
 
@@ -545,7 +548,7 @@ def add_project(request):
     return render(request, 'project_inventory/add_project.html', context)
 
 
-@login_required()
+# @login_required()
 def list_projects(request):
     """
     Show all projects in a table view.
@@ -579,7 +582,7 @@ def list_projects(request):
 
     return render(request, 'project_inventory/list_projects.html', context)
 
-@login_required()
+# @login_required()
 def graphs(request):
     """
     Controller for the Plots Page.

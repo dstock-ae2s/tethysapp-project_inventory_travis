@@ -10,7 +10,8 @@ function saveDataToDB () {
     var proj_priority_list = [];
     var proj_const_cost_list = [];
     var proj_est_year_list = [];
-    var checkbox_list = [];
+    var debt_checkbox_list = [];
+    var recur_checkbox_list = [];
 
     var project_names = document.querySelectorAll('.project-name');
 
@@ -24,12 +25,18 @@ function saveDataToDB () {
         priority = document.getElementById(i+'-project-priority').value;
         const_cost = document.getElementById(i+'-project-constcost').value;
         est_year = document.getElementById(i+'-project-estyear').value;
-        is_checkbox = document.getElementById(i+'-checkbox');
+        debt_is_checkbox = document.getElementById(i+'-debt-checkbox');
+        recur_is_checkbox = document.getElementById(i+'-recur-checkbox');
 
-        if (is_checkbox.checked==true){
-            is_checkbox=true;
+        if (debt_is_checkbox.checked==true){
+            debt_is_checkbox=true;
         } else{
-            is_checkbox=false;
+            debt_is_checkbox=false;
+        }
+        if (recur_is_checkbox.checked==true){
+            recur_is_checkbox=true;
+        } else{
+            recur_is_checkbox=false;
         }
 
         proj_name_list.push(project_name);
@@ -40,7 +47,8 @@ function saveDataToDB () {
         proj_priority_list.push(priority);
         proj_const_cost_list.push(const_cost);
         proj_est_year_list.push(est_year);
-        checkbox_list.push(is_checkbox);
+        debt_checkbox_list.push(debt_is_checkbox);
+        recur_checkbox_list.push(recur_is_checkbox);
 
     };
 
@@ -55,7 +63,8 @@ function saveDataToDB () {
     var json_proj_priority_list = JSON.stringify(proj_priority_list);
     var json_proj_const_cost_list = JSON.stringify(proj_const_cost_list);
     var json_proj_est_year_list = JSON.stringify(proj_est_year_list);
-    var json_checkbox_list = JSON.stringify(checkbox_list);
+    var json_debt_checkbox_list = JSON.stringify(debt_checkbox_list);
+    var json_recur_checkbox_list = JSON.stringify(recur_checkbox_list);
 
     data.append("project_name_list",json_proj_name_list);
     data.append("project_cost_list",json_proj_cost_list);
@@ -66,12 +75,14 @@ function saveDataToDB () {
     data.append("project_const_cost_list",json_proj_const_cost_list);
     data.append("facility_id", facility_id);
     data.append("project_est_year_list",json_proj_est_year_list);
-    data.append("checkbox_list",json_checkbox_list);
+    data.append("debt_checkbox_list",json_debt_checkbox_list);
+    data.append("recur_checkbox_list",json_recur_checkbox_list);
 
     var save_updates_to_db = ajax_update_database_with_file("save-updates-to-db", data); //Submitting the data through the ajax function, see main.js for the helper function.
     save_updates_to_db.done(function(return_data){ //Reset the form once the data is added successfully
     });
 
+    closeModal();
 
 };
 
@@ -137,20 +148,33 @@ $(function() {
                     project_const_cost_list = return_data.const_cost;
                 };
 
-                var is_checked = " "
+                if("debt_checkbox" in return_data){
+                    debt_checkbox_list = return_data.debt_checkbox;
+                    console.log(return_data.debt_checkbox);
 
-                if("checkbox" in return_data){
-                    checkbox_list = return_data.checkbox;
-                    if(return_data.checkbox){
-                        is_checked = " checked ";
-                    };
+                };
+                if("recur_checkbox" in return_data){
+                    recur_checkbox_list = return_data.recur_checkbox;
+                    console.log(return_data.recur_checkbox);
+
                 };
 
                 $('#project-list-table tr').not(':first').remove();
                 var html = '';
 
                 for(var i = 0; i < project_name_list.length; i++){
-
+                    if(debt_checkbox_list[i] == "true"){
+                        console.log("truth revealed")
+                        debt_is_checked = " checked ";
+                    } else{
+                        debt_is_checked = " ";
+                    }
+                    if(recur_checkbox_list[i] == "true"){
+                        recur_is_checked = " checked ";
+                    } else{
+                        recur_is_checked = " ";
+                    }
+                    console.log(project_const_cost_list)
 
                     html += '<tr id="row-'+(i+1)+'">'+
                                 '<td><input class="edit-fields project-name" type="text" id="' + (i+1) +'-project-name" value="'+ project_name_list[i] + '" disabled></td>' +
@@ -161,7 +185,8 @@ $(function() {
                                 '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-cost" value="'+ project_cost_list[i] + '" disabled></td>' +
                                 '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-year" value="'+ planned_year_list[i] + '" disabled></td>' +
                                 '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="'+ project_const_cost_list[i] + '" disabled></td>' +
-                                '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-checkbox"'+ is_checked + 'disabled></td>' +
+                                '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox"'+ debt_is_checked + 'disabled></td>' +
+                                '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox"'+ recur_is_checked + 'disabled></td>' +
                                 '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+
                                 '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="submit-edit-region" id="edit-button-'+(i+1)+'" onclick="editRow('+(i+1)+');" class="btn btn-warning submit-edit-region" role="button">'+
                                 '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="submit-delete-region" id="delete-button-'+(i+1)+'" class="btn btn-danger submit-delete-region" role="button">'+
@@ -228,8 +253,11 @@ function editRow (row_num){
     document.getElementById(row_num+'-project-constcost').disabled = false;
     document.getElementById(row_num+'-project-constcost').style.border = '1px solid';
 
-    document.getElementById(row_num+'-checkbox').disabled = false;
-    document.getElementById(row_num+'-checkbox').style.border = '1px solid';
+    document.getElementById(row_num+'-debt-checkbox').disabled = false;
+    document.getElementById(row_num+'-debt-checkbox').style.border = '1px solid';
+
+    document.getElementById(row_num+'-recur-checkbox').disabled = false;
+    document.getElementById(row_num+'-recur-checkbox').style.border = '1px solid';
 
 };
 
@@ -274,8 +302,11 @@ function stopEditRow (row_num){
     document.getElementById(row_num+'-project-constcost').disabled = true;
     document.getElementById(row_num+'-project-constcost').style.border = 'none';
 
-    document.getElementById(row_num+'-checkbox').disabled = true;
-    document.getElementById(row_num+'-checkbox').style.border = 'none';
+    document.getElementById(row_num+'-debt-checkbox').disabled = true;
+    document.getElementById(row_num+'-debt-checkbox').style.border = 'none';
+
+    document.getElementById(row_num+'-recur-checkbox').disabled = true;
+    document.getElementById(row_num+'-recur-checkbox').style.border = 'none';
 };
 
 function addProjectRow (){
@@ -297,7 +328,8 @@ function addProjectRow (){
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-cost" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-year" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="checkbox" id="' + (i+1) +'-checkbox" value=""></td>' +
+                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox" ></td>' +
+                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox" ></td>' +
                     '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+
                     '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="submit-edit-region" id="edit-button-'+(i+1)+'" onclick="editRow('+(i+1)+');" class="btn btn-warning submit-edit-region" role="button">'+
                     '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="submit-delete-region" id="delete-button-'+(i+1)+'" class="btn btn-danger submit-delete-region" role="button">'+
