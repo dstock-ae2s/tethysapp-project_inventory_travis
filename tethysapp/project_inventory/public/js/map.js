@@ -278,6 +278,17 @@ function editRow (row_num){
         document.getElementById(row_num+'-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
     });
 
+    $('#'+row_num+'-debt-checkbox').change(function(){
+        if(document.getElementById(row_num+'-debt-checkbox').value =="on"){
+            document.getElementById(row_num+'-recur-checkbox').checked = false;
+        }
+    });
+    $('#'+row_num+'-recur-checkbox').change(function(){
+        if(document.getElementById(row_num+'-recur-checkbox').value == "on"){
+            document.getElementById(row_num+'-debt-checkbox').checked = false;
+        }
+    });
+
 };
 
 function stopEditRow (row_num){
@@ -347,8 +358,8 @@ function addProjectRow (){
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-estcost" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constyear" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="" ></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox" ></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox" ></td>' +
+                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox" value="true"></td>' +
+                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox" value="true"></td>' +
                     '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+
                     '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="submit-edit-region" id="edit-button-'+(i+1)+'" onclick="editRow('+(i+1)+');" class="btn btn-warning submit-edit-region" role="button">'+
                     '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="submit-delete-region" id="delete-button-'+(i+1)+'" class="btn btn-danger submit-delete-region" role="button">'+

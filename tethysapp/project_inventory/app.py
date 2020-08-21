@@ -34,7 +34,7 @@ class ProjectInventory(TethysAppBase):
             UrlMap(
                 name='add_project',
                 url='project-inventory/projects/add',
-                controller='project_inventory.controllers.add_project'
+                controller='project_inventory.controllers.add_facility'
             ),
             UrlMap(
                 name='projects',

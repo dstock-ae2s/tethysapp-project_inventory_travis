@@ -67,7 +67,7 @@ def add_new_project(location, facility_id, project, est_cost, const_year, catego
                 (interest_rate * (1 + interest_rate) ** (pay_period)) / (
                 (1 + interest_rate) ** (pay_period) - 1))
         for _ in range(pay_period-1):
-            cost_array.append(round(annual_payment),2)
+            cost_array.append(round(annual_payment,2))
 
     elif recur_checkbox_val == "true":
         annual_payment = float(const_cost)
