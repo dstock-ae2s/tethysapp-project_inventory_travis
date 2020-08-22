@@ -18,6 +18,7 @@
 
 .modal-body {
     overflow-x: auto;
+
 }
 
 table {
@@ -30,10 +31,11 @@ td, th {
   border: 1px solid #000000;
   text-align: left;
   padding: 8px;
+
   backgroundColor:white;
 }
 tr:nth-child(even) {
-  backgroundColor:black;
+  background-color:light-gray;
 
 }
 .edit-fields {
@@ -42,7 +44,7 @@ tr:nth-child(even) {
 }
 
 #map-popup-modal {
-  width:90%;
+  width:100%;
   max-width: 100%;
 }
 .btn {

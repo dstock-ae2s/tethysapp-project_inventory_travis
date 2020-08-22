@@ -6,9 +6,9 @@ from tethys_sdk.gizmos import (Button, MapView, TextInput, DatePicker,
                                SelectInput, DataTableView, MVDraw, MVView,
                                MVLayer)
 from tethys_sdk.permissions import permission_required, has_permission
-from .model import Project, add_new_project, get_all_projects
+from .model import Project, Revenue, add_new_project, get_all_projects,get_all_revenue
 from .app import ProjectInventory as app
-from .helpers import create_bargraph, create_piechart, create_sunburst
+from .helpers import *
 import numpy as np
 
 
@@ -256,15 +256,15 @@ def home(request):
     )
 
     # Define view centered on project locations
-    try:
-        view_center = [sum(lng_list) / float(len(lng_list)), sum(lat_list) / float(len(lat_list))]
-    except ZeroDivisionError:
-        view_center = [-98.6, 39.8]
+    # try:
+    #     view_center = [sum(lng_list) / float(len(lng_list)), sum(lat_list) / float(len(lat_list))]
+    # except ZeroDivisionError:
+    view_center = [-103.28, 47.8]
 
     view_options = MVView(
         projection='EPSG:4326',
         center=view_center,
-        zoom=4.5,
+        zoom=14,
         maxZoom=18,
         minZoom=2
     )
@@ -275,9 +275,9 @@ def home(request):
         layers=[sw_projects_layer, w_projects_layer, ww_projects_layer,
                 fac_projects_layer, golf_projects_layer, transp_projects_layer],
         basemap=[
+            'OpenStreetMap',
             'CartoDB',
             {'CartoDB': {'style': 'dark'}},
-            'OpenStreetMap',
             'Stamen',
             'ESRI'
         ],
@@ -295,7 +295,7 @@ def home(request):
     context = {
         'project_inventory_map': project_inventory_map,
         'add_project_button': add_project_button,
-        'can_add_projects': has_permission(request, 'add_projects')
+        # 'can_add_projects': has_permission(request, 'add_projects')
     }
 
     return render(request, 'project_inventory/home.html', context)
@@ -509,8 +509,8 @@ def add_facility(request):
 
     initial_view = MVView(
         projection='EPSG:4326',
-        center=[-98.6, 39.8],
-        zoom=3.5
+        center=[-103.3, 47.7],
+        zoom=10
     )
 
     drawing_options = MVDraw(
@@ -563,7 +563,7 @@ def add_facility(request):
         'location_error': location_error,
         'add_button': add_button,
         'cancel_button': cancel_button,
-        'can_add_projects': has_permission(request, 'add_projects')
+        # 'can_add_projects': has_permission(request, 'add_projects')
     }
 
     return render(request, 'project_inventory/add_facility.html', context)
@@ -599,13 +599,13 @@ def list_projects(request):
 
     context = {
         'projects_table': projects_table,
-        'can_add_projects': has_permission(request, 'add_projects')
+        # 'can_add_projects': has_permission(request, 'add_projects')
     }
 
     return render(request, 'project_inventory/list_projects.html', context)
 
 # @login_required()
-def graphs(request):
+def capital_costs(request):
     """
     Controller for the Plots Page.
     """
@@ -613,16 +613,132 @@ def graphs(request):
     Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
     session = Session()
 
-    bargraph_plot = create_bargraph()
-    piechart_plot = create_piechart()
-    sunburst_plot = create_sunburst()
+
+    bargraph_plot = create_capital_costs_bargraph()
+    piechart_plot = create_capital_costs_piechart()
+    sunburst_plot = create_capital_costs_sunburst()
+
 
     context = {
         'bargraph_plot': bargraph_plot,
         'piechart_plot': piechart_plot,
         'sunburst_plot': sunburst_plot,
-        'can_add_projects': has_permission(request, 'add_projects')
+        # 'can_add_projects': has_permission(request, 'add_projects')
     }
 
     session.close()
-    return render(request, 'project_inventory/graphs.html', context)
+    return render(request, 'project_inventory/capital_costs.html', context)
+
+def revenue_requirements(request):
+    """
+    Controller for the Plots Page.
+    """
+    # Get projects from database
+    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+    session = Session()
+
+
+
+    bargraph_plot = create_revenue_requirements_bargraph()
+    piechart_plot = create_revenue_requirements_piechart()
+    sunburst_plot = create_revenue_requirements_sunburst()
+
+
+
+    context = {
+        'bargraph_plot': bargraph_plot,
+        'piechart_plot': piechart_plot,
+        'sunburst_plot': sunburst_plot,
+        # 'can_add_projects': has_permission(request, 'add_projects')
+    }
+
+    session.close()
+    return render(request, 'project_inventory/revenue_requirements.html', context)
+
+def revenue(request):
+    """
+    Controller for the Plots Page.
+    """
+    # Get projects from database
+    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+    session = Session()
+
+
+
+    bargraph_plot = create_revenue_bargraph()
+    piechart_plot = create_revenue_piechart()
+    # sunburst_plot = create_revenue_sunburst()
+
+
+
+    context = {
+        'bargraph_plot': bargraph_plot,
+        'piechart_plot': piechart_plot,
+        # 'sunburst_plot': sunburst_plot,
+        # 'can_add_projects': has_permission(request, 'add_projects')
+    }
+
+    session.close()
+    return render(request, 'project_inventory/revenue.html', context)
+
+def revenue_vs_requirements(request):
+    """
+    Controller for the Plots Page.
+    """
+
+    # Get projects from database
+    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+    session = Session()
+
+
+    bargraph_plot = create_revenue_vs_requirements_bargraph()
+    piechart_plot = create_revenue_vs_requirements_piechart()
+    sunburst_plot = create_revenue_vs_requirements_sunburst()
+
+
+
+    context = {
+        'bargraph_plot': bargraph_plot,
+        'piechart_plot': piechart_plot,
+        'sunburst_plot': sunburst_plot,
+        # 'can_add_projects': has_permission(request, 'add_projects')
+    }
+
+    session.close()
+    return render(request, 'project_inventory/revenue_vs_requirements.html', context)
+
+def admin_page(request):
+    """
+    Controller for the Plots Page.
+    """
+
+    # Get projects from database
+    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+    session = Session()
+
+    add_rev_button = Button(
+        display_text='Add',
+        name='add-button',
+        icon='glyphicon glyphicon-plus',
+        style='success',
+        attributes={'onclick': 'add_revenue_data();'},
+        submit=True
+    )
+
+    add_proj_button = Button(
+        display_text='Add Projects',
+        name='add-button',
+        icon='glyphicon glyphicon-plus',
+        style='success',
+        attributes={'onclick': 'add_proj_data();'},
+        submit=True
+    )
+
+
+    context = {
+        'add-rev-btn':add_rev_button,
+        'add-proj-btn': add_proj_button,
+    }
+
+    session.close()
+    return render(request, 'project_inventory/admin.html', context)

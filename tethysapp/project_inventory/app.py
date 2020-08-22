@@ -52,9 +52,24 @@ class ProjectInventory(TethysAppBase):
                 controller='project_inventory.ajax_controllers.save_updates_to_db'
             ),
             UrlMap(
-                name='graphs',
-                url='project-inventory/graphs',
-                controller='project_inventory.controllers.graphs'
+                name='capital-costs',
+                url='project-inventory/capital-costs',
+                controller='project_inventory.controllers.capital_costs'
+            ),
+            UrlMap(
+                name='revenue-requirements',
+                url='project-inventory/revenue-requirements',
+                controller='project_inventory.controllers.revenue_requirements'
+            ),
+            UrlMap(
+                name='revenue',
+                url='project-inventory/revenue',
+                controller='project_inventory.controllers.revenue'
+            ),
+            UrlMap(
+                name='revenue-vs-requirements',
+                url='project-inventory/revenue-vs-requirements',
+                controller='project_inventory.controllers.revenue_vs_requirements'
             ),
         )
 

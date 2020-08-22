@@ -16,14 +16,22 @@
   {% url 'project_inventory:home' as home_url %}
   {% url 'project_inventory:add_project' as add_project_url %}
   {% url 'project_inventory:projects' as list_project_url %}
-  {% url 'project_inventory:graphs' as graph_url %}
+  {% url 'project_inventory:capital-costs' as capital_costs_url %}
+  {% url 'project_inventory:revenue-requirements' as revenue_requirements_url %}
+  {% url 'project_inventory:revenue' as revenue_url %}
+  {% url 'project_inventory:revenue-vs-requirements' as revenue_vs_requirements_url %}
+
   <li class="title">Navigation</li>
   <li class="{% if request.path == home_url %}active{% endif %}"><a href="{{ home_url }}">Home</a></li>
   <li class="{% if request.path == list_project_url %}active{% endif %}"><a href="{{ list_project_url }}">Projects</a></li>
-  <li class="{% if request.path == graph_url %}active{% endif %}"><a href="{{ graph_url }}">Plots</a></li>
-  {% if can_add_projects %}
   <li class="{% if request.path == add_project_url %}active{% endif %}"><a href="{{ add_project_url }}">Add Facility</a></li>
-  {% endif %}
+
+  <li class="title">Analysis</li>
+  <li class="{% if request.path == capital_costs_url %}active{% endif %}"><a href="{{ capital_costs_url }}">1.)  Capital Costs</a></li>
+  <li class="{% if request.path == revenue_requirements_url %}active{% endif %}"><a href="{{ revenue_requirements_url }}">2.)  Revenue Requirements</a></li>
+  <li class="{% if request.path == revenue_url %}active{% endif %}"><a href="{{ revenue_url }}">3.)  Revenue</a></li>
+  <li class="{% if request.path == revenue_vs_requirements_url %}active{% endif %}"><a href="{{ revenue_vs_requirements_url }}">4.)  Revenue vs. Requirements</a></li>
+
 {% endblock %}
 
 {% block app_content %}

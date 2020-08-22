@@ -102,7 +102,7 @@ def save_updates_to_db (request):
             elif recur_checkbox_list[i] == True:
                 annual_payment = float(project_const_cost_list[i])
                 for j in range(recur_years):
-                    annual_payment = annual_payment * ((inflation_rate+1)**j)
+                    annual_payment = annual_payment * ((inflation_rate+1))
                     cost_array.append(round(annual_payment))
                     print(annual_payment)
 

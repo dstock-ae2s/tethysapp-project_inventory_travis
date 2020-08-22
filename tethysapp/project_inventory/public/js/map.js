@@ -187,10 +187,10 @@ $(function() {
                                 '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="'+ project_const_cost_list[i] + '" disabled></td>' +
                                 '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox"'+ debt_is_checked + 'disabled></td>' +
                                 '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox"'+ recur_is_checked + 'disabled></td>' +
-                                '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+
-                                '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="submit-edit-region" id="edit-button-'+(i+1)+'" onclick="editRow('+(i+1)+');" class="btn btn-warning submit-edit-region" role="button">'+
-                                '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="submit-delete-region" id="delete-button-'+(i+1)+'" class="btn btn-danger submit-delete-region" role="button">'+
-                                '<span class="glyphicon glyphicon-remove"></span> Delete </a>'+
+                                '<td class="table-button"><div><span><a name="submit-stop-edit-region" style="display:none;" aria-label="Stop Editing" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-group btn-success submit-stop-edit-region" role="button">'+
+                                '<span class="glyphicon glyphicon-save"></span></a><a name="submit-edit-region" aria-label="Edit Row" id="edit-button-'+(i+1)+'" onclick="editRow('+(i+1)+');" class="btn btn-group btn-warning submit-edit-region" role="button">'+
+                                '<span class="glyphicon glyphicon-edit"></span></a><a name="submit-delete-region" aria-label="Delete Row" id="delete-button-'+(i+1)+'" class="btn btn-danger button-group submit-delete-region" role="button">'+
+                                '<span class="glyphicon glyphicon-remove"></span></a></span>'+
                                 '</div>'+
                                 '</td>'+
                             '</tr>';
@@ -214,7 +214,7 @@ function closeModal (){
 
 function editRow (row_num){
 
-    document.getElementById('stop-edit-button-'+row_num).style.display = 'table-row';
+    document.getElementById('stop-edit-button-'+row_num).style.display = 'inline-block';
     document.getElementById('delete-button-'+row_num).disabled = true;
 
     var delete_buttons = document.querySelectorAll('.submit-delete-region');
@@ -305,7 +305,7 @@ function stopEditRow (row_num){
         delete_buttons[i].style.borderColor = "#d43f3a";
     };
     for (var j = 0; j < edit_buttons.length; j++){
-        edit_buttons[j].style.display = 'table-row';
+        edit_buttons[j].style.display = 'inline-block';
 
     };
     document.getElementById(row_num+'-project-name').disabled = true;

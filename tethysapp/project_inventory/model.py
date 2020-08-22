@@ -17,6 +17,7 @@ class Revenue(Base):
 
     # Columns
     id = Column(Integer, primary_key=True)
+    scenario = Column(String)
     revenue_source = Column(String)
     monetary_Value = Column(String)
     year = Column(String)
@@ -104,6 +105,32 @@ def add_new_project(location, facility_id, project, est_cost, const_year, catego
     session.close()
 
 
+def add_new_revenue(row_id, scenario, rev_src, mval, rev_year):
+    """
+    Persist new project.
+    """
+    # Convert GeoJSON to Python dictionary
+
+    # Create new Project record
+    new_revenue = Project(
+        id=row_id,
+        scenario=scenario,
+        revenue_source=rev_src,
+        monetary_value=mval,
+        year=rev_year,
+    )
+
+    # Get connection/session to database
+    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+    session = Session()
+
+    # Add the new project record to the session
+    session.add(new_revenue)
+
+    # Commit the session and close the connection
+    session.commit()
+    session.close()
+
 def get_all_projects():
     """
     Get all persisted projects.
@@ -117,6 +144,20 @@ def get_all_projects():
     session.close()
 
     return projects
+
+def get_all_revenue():
+    """
+    Get all persisted projects.
+    """
+    # Get connection/session to database
+    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+    session = Session()
+
+    # Query for all project records
+    revenue = session.query(Revenue).all()
+    session.close()
+
+    return revenue
 
 def init_primary_db(engine, first_time):
     """

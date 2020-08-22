@@ -1,12 +1,8 @@
 {% extends "project_inventory/base.html" %}
 {% load tethys_gizmos staticfiles %}
 
-{% block import_gizmos %}
-  {% import_gizmo_dependency plotly_view %}
-{% endblock %}
 
 {% block app_content %}
-
 
 {% endblock %}
 
@@ -15,9 +11,9 @@
 {% endblock %}
 
 {% block app_actions %}
-  {% if can_add_projects %}
+    {% gizmo add_rev_button %}
     {% gizmo add_project_button %}
-  {% endif %}
+
 {% endblock %}
 
 {% block styles %}
