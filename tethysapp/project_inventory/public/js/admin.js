@@ -1,92 +1,15 @@
-$(function(){
-    var nrows = document.querySelectorAll('.project-name');
-    console.log(nrows.length)
-    for (i=0; i<nrows.length; i++){
-        $('#'+i+'-add-project-project-estcost').change(function(){updateConstCost(i);});
-        $('#'+i+'-add-project-project-estyear').change(function(){updateConstCost(i);});
-        $('#'+i+'-add-project-project-constyear').change(function(){updateConstCost(i);});
-        $('#'+i+'-add-project-debt-checkbox').change(function(){
-            if(document.getElementById(i+'-add-project-debt-checkbox').value =="true"){
-                document.getElementById(i+'-add-project-recur-checkbox').checked = false;
-            }
-        });
-        $('#'+i+'-add-project-recur-checkbox').change(function(){
-            if(document.getElementById(i+'-add-project-recur-checkbox').value == "true"){
-                document.getElementById(i+'-add-project-debt-checkbox').checked = false;
-            }
-        });
-    }
-
-    $('#0-add-project-project-estcost').change(function(){updateConstCost(0);});
-    $('#0-add-project-project-estyear').change(function(){updateConstCost(0);});
-    $('#0-add-project-project-constyear').change(function(){updateConstCost(0);});
-    $('#0-add-project-debt-checkbox').change(function(){
-        if(document.getElementById('0-add-project-debt-checkbox').value =="true"){
-            document.getElementById('0-add-project-recur-checkbox').checked = false;
-        }
+function importProjectsToDb(){
+    var data = new FormData();
+    var import_projects_to_db = ajax_update_database_with_file("import-projects-to-db", data); //Submitting the data through the ajax function, see main.js for the helper function.
+    import_projects_to_db.done(function(return_data){ //Reset the form once the data is added successfully
     });
-    $('#0-add-project-recur-checkbox').change(function(){
-        if(document.getElementById('0-add-project-recur-checkbox').value == "true"){
-            document.getElementById('0-add-project-debt-checkbox').checked = false;
-        }
+
+}
+
+function importRevenueToDb(){
+    var data = new FormData();
+    var import_revenue_to_db = ajax_update_database_with_file("import-revenue-to-db", data); //Submitting the data through the ajax function, see main.js for the helper function.
+    import_revenue_to_db.done(function(return_data){ //Reset the form once the data is added successfully
     });
-});
 
-function updateConstCost(row){
-    this_est_cost = parseFloat(document.getElementById(row+'-add-project-project-estcost').value)
-    this_const_year = parseFloat(document.getElementById(row+'-add-project-project-constyear').value)
-    this_est_year = parseFloat(document.getElementById(row+'-add-project-project-estyear').value)
-    document.getElementById(row+'-add-project-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
-};
-
-function addProjectRow (){
-    console.log("In Add Project Row")
-
-    var html = '';
-
-        var nrows = document.querySelectorAll('.project-name');
-        numrows = nrows.length;
-        console.log(numrows);
-        i = numrows;
-
-        html += '<tr id="add-project-row-'+(i)+'">'+
-                    '<td><input style="border: 1px solid" class="edit-fields project-name" type="text" id="' + (i) +'-add-project-project-name" name="' + (i) +'_add_project_project_name" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i) +'-add-project-project-category" name="' + (i) +'_add_project_project_category" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i) +'-add-project-project-priority" name="' + (i) +'_add_project_project_priority" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i) +'-add-project-project-description" name="' + (i) +'_add_project_project_description" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i) +'-add-project-project-estyear" name="' + (i) +'_add_project_project_estyear" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i) +'-add-project-project-estcost" name="' + (i) +'_add_project_project_estcost" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i) +'-add-project-project-constyear" name="' + (i) +'_add_project_project_constyear" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i) +'-add-project-project-constcost" name="' + (i) +'_add_project_project_constcost" value="" ></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i) +'-add-project-debt-checkbox" name="' + (i) +'_add_project_debt_checkbox" value="true"></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i) +'-add-project-recur-checkbox" name="' + (i) +'_add_project_recur_checkbox" value="true"></td>' +
-                    '<a name="submit-delete-region" id="delete-button-'+(i)+'" class="btn btn-danger submit-delete-region" role="button">'+
-                    '<span class="glyphicon glyphicon-remove"></span> Delete </a>'+
-                    '</div>'+
-                    '</td>'+
-                '</tr>';
-
-    $('#add-project-list-table tr').last().after(html);
-    j=numrows
-
-    $('#'+j+'-add-project-project-estcost').change(function(){updateConstCost(j);});
-    $('#'+j+'-add-project-project-estyear').change(function(){updateConstCost(j);});
-    $('#'+j+'-add-project-project-constyear').change(function(){updateConstCost(j);});
-
-    $('#'+j+'-add-project-debt-checkbox').change(function(){
-        if(document.getElementById(j+'-add-project-debt-checkbox').value =="true"){
-            document.getElementById(j+'-add-project-recur-checkbox').checked = false;
-        }
-        else{
-            console.log(document.getElementById(j+'-add-project-debt-checkbox').value)
-        }
-    });
-    $('#'+j+'-add-project-recur-checkbox').change(function(){
-        if(document.getElementById(j+'-add-project-recur-checkbox').value == "true"){
-            document.getElementById(j+'-add-project-debt-checkbox').checked = false;
-        }
-        else{
-            console.log(document.getElementById(j+'-add-project-recur-checkbox').value)
-        }
-    });
-};
+}

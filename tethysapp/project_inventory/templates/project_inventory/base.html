@@ -20,6 +20,7 @@
   {% url 'project_inventory:revenue-requirements' as revenue_requirements_url %}
   {% url 'project_inventory:revenue' as revenue_url %}
   {% url 'project_inventory:revenue-vs-requirements' as revenue_vs_requirements_url %}
+  {% url 'project_inventory:admin' as admin_url %}
 
   <li class="title">Navigation</li>
   <li class="{% if request.path == home_url %}active{% endif %}"><a href="{{ home_url }}">Home</a></li>
@@ -31,6 +32,10 @@
   <li class="{% if request.path == revenue_requirements_url %}active{% endif %}"><a href="{{ revenue_requirements_url }}">2.)  Revenue Requirements</a></li>
   <li class="{% if request.path == revenue_url %}active{% endif %}"><a href="{{ revenue_url }}">3.)  Revenue</a></li>
   <li class="{% if request.path == revenue_vs_requirements_url %}active{% endif %}"><a href="{{ revenue_vs_requirements_url }}">4.)  Revenue vs. Requirements</a></li>
+
+  <li class="title">Admin</li>
+  <li class="{% if request.path == admin_url %}active{% endif %}"><a href="{{ admin_url }}">DB Manager</a></li>
+
 
 {% endblock %}
 

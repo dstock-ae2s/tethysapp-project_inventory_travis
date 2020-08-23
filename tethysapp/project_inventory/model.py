@@ -45,7 +45,7 @@ class Project(Base):
     recur_checkbox_val = Column(String)
 
 
-def add_new_project(location, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
+def add_new_project(row_id, location, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
     """
     Persist new project.
     """
@@ -78,6 +78,7 @@ def add_new_project(location, facility_id, project, est_cost, const_year, catego
 
     # Create new Project record
     new_project = Project(
+        id= row_id,
         latitude=latitude,
         longitude=longitude,
         facility_id=facility_id,
@@ -105,24 +106,83 @@ def add_new_project(location, facility_id, project, est_cost, const_year, catego
     session.close()
 
 
-def add_new_revenue(row_id, scenario, rev_src, mval, rev_year):
+def add_new_project_from_csv(row_id, latitude, longitude, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
     """
     Persist new project.
     """
     # Convert GeoJSON to Python dictionary
 
+    inflation_rate = 0.04
+    interest_rate = 0.04
+    pay_period = 20
+    recur_years = 20
+
+    cost_array = []
+    cost_array.append(const_cost)
+    print(debt_checkbox_val)
+    if debt_checkbox_val == "true":
+        annual_payment = float(const_cost) * (
+                (interest_rate * (1 + interest_rate) ** (pay_period)) / (
+                (1 + interest_rate) ** (pay_period) - 1))
+        for _ in range(pay_period-1):
+            cost_array.append(round(annual_payment,2))
+
+    elif recur_checkbox_val == "true":
+        annual_payment = float(const_cost)
+        for j in range(recur_years):
+            annual_payment = annual_payment * (inflation_rate + 1)
+            cost_array.append(round(annual_payment, 2))
+
     # Create new Project record
-    new_revenue = Project(
-        id=row_id,
-        scenario=scenario,
-        revenue_source=rev_src,
-        monetary_value=mval,
-        year=rev_year,
+    new_project = Project(
+        id= row_id,
+        latitude=latitude,
+        longitude=longitude,
+        facility_id=facility_id,
+        project=project,
+        est_year=est_year,
+        est_cost=est_cost,
+        category=category,
+        description=description,
+        priority=priority,
+        const_year=const_year,
+        const_cost=cost_array,
+        debt_checkbox_val= debt_checkbox_val,
+        recur_checkbox_val= recur_checkbox_val,
     )
 
     # Get connection/session to database
     Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
     session = Session()
+
+    # Add the new project record to the session
+    session.add(new_project)
+
+    # Commit the session and close the connection
+    session.commit()
+    session.close()
+
+def add_new_revenue(row_id, scenario, rev_src, mval, rev_year):
+    """
+    Persist new project.
+    """
+    # Convert GeoJSON to Python dictionary
+    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+    session = Session()
+
+
+
+    # Create new Project record
+    new_revenue = Revenue(
+        id=row_id,
+        scenario=scenario,
+        revenue_source=rev_src,
+        monetary_Value=mval,
+        year=rev_year,
+    )
+
+    # Get connection/session to database
+
 
     # Add the new project record to the session
     session.add(new_revenue)
@@ -173,38 +233,38 @@ def init_primary_db(engine, first_time):
         session = Session()
 
         # Initialize database with two projects
-        project1 = Project(
-            latitude=40.406624,
-            longitude=-111.529133,
-            facility_id="Deer Creek",
-            project="New Intake",
-            est_cost="1000",
-            const_year="2022",
-            category="Water",
-            description="Replace Deer Creek intake structure",
-            priority="4",
-            est_year="2020",
-            const_cost=["2000"],
-            debt_checkbox_val=True,
-            recur_checkbox_val=False,
-
-        )
-
-        project2 = Project(
-            latitude=40.598168,
-            longitude=-111.424055,
-            facility_id="Jordanelle",
-            project="Clean Water",
-            est_cost="2000",
-            const_year="2023",
-            category="Stormwater",
-            description="Clean up Jordanelle",
-            priority="4",
-            est_year="2020",
-            const_cost=["5000"],
-            debt_checkbox_val=False,
-            recur_checkbox_val=True,
-        )
+        # project1 = Project(
+        #     latitude=40.406624,
+        #     longitude=-111.529133,
+        #     facility_id="Deer Creek",
+        #     project="New Intake",
+        #     est_cost="1000",
+        #     const_year="2022",
+        #     category="Water",
+        #     description="Replace Deer Creek intake structure",
+        #     priority="4",
+        #     est_year="2020",
+        #     const_cost=["2000"],
+        #     debt_checkbox_val=True,
+        #     recur_checkbox_val=False,
+        #
+        # )
+        #
+        # project2 = Project(
+        #     latitude=40.598168,
+        #     longitude=-111.424055,
+        #     facility_id="Jordanelle",
+        #     project="Clean Water",
+        #     est_cost="2000",
+        #     const_year="2023",
+        #     category="Stormwater",
+        #     description="Clean up Jordanelle",
+        #     priority="4",
+        #     est_year="2020",
+        #     const_cost=["5000"],
+        #     debt_checkbox_val=False,
+        #     recur_checkbox_val=True,
+        # )
 
         # Add the projects to the session, commit, and close
         session.add(project1)

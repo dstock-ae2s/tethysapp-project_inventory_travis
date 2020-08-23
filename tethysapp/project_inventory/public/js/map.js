@@ -85,12 +85,47 @@ function saveDataToDB () {
     closeModal();
 
 };
+function getAllofEm () {
 
+var allLayers = [];
+var map = TETHYS_MAP_VIEW.getMap();
+var mapLayers = map.getLayers().getArray();
+
+mapLayers.forEach(function (layer, i) {
+    if (layer instanceof ol.layer.Group && layer.getVisible() == true ) {
+        layer.getLayers().getArray().forEach(function(sublayer, j, layers) {
+            allLayers.push(sublayer);
+        })
+    } else if ( !(layer instanceof ol.layer.Group) && layer.getVisible() == true ) {
+            allLayers.push(layer);
+    }
+});
+
+return allLayers;
+}
+
+function needMeSomeLayers () {
+
+var layerArray = getAllofEm();
+
+  layerArray.forEach(layer, function() {
+
+    // do something with them
+  })
+}
+
+function getSomeLayers(id) {
+
+var map = TETHYS_MAP_VIEW.getMap();
+
+map.getLayers(id);
+}
 $(function() {
 
     // Get the Open Layers map object from the Tethys MapView
     var map = TETHYS_MAP_VIEW.getMap();
-
+    var layer_list = map.getLayers();
+    console.log(layer_list);
     // Get the Select Interaction from the Tethys MapView
     var select_interaction = TETHYS_MAP_VIEW.getSelectInteraction();
 

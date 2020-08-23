@@ -1,8 +1,10 @@
-from .model import Project, add_new_project, get_all_projects
+from .model import Project, add_new_project, get_all_projects, add_new_revenue, get_all_revenue,add_new_project_from_csv
 from django.http import JsonResponse, HttpResponse, Http404
+from django.shortcuts import render, reverse, redirect
 from .app import ProjectInventory as app
 from .helpers import *
 import json
+import csv
 
 def get_project_list (request):
     if request.is_ajax() and request.method == 'POST':
@@ -144,3 +146,113 @@ def save_updates_to_db (request):
 #         return_obj["planned_year"] = fac_projyear_list
 
         return JsonResponse(return_obj)
+
+
+def import_revenue_to_db(request):
+    return_obj ={}
+    if request.is_ajax() and request.method == 'POST':
+
+        Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+        session = Session()
+
+        revenue_list = session.query(Revenue).all()
+        row_id = len(revenue_list) +1
+
+        with open('/Users/tmcstraw/Downloads/Revenue.csv', newline='') as f:
+            reader = csv.reader(f)
+            data = list(reader)
+
+        print(data[0])
+        print(data[1])
+        print(len(data))
+
+        for row in data:
+
+                print(row[0])
+                clean_val = ((row[1].replace("$","")).replace(",",""))
+                print(row[2])
+                print(row[3])
+
+                add_new_revenue(row_id, row[3],row[2],clean_val,row[0])
+                row_id = row_id +1
+
+        session.close()
+        return_obj['success'] = "success"
+
+        return JsonResponse(return_obj)
+
+def import_projects_to_db(request):
+    return_obj ={}
+    if request.is_ajax() and request.method == 'POST':
+
+        Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+        session = Session()
+
+        project_list = session.query(Project).all()
+        row_id = len(project_list) +1
+
+        with open('/Users/tmcstraw/Downloads/Costs.csv', newline='') as f:
+            reader = csv.reader(f)
+            data = list(reader)
+
+        newdata = (data[1:])
+        print(newdata)
+        for row in newdata:
+            print(row)
+
+            latitude = row[0]
+            longitude= row[1]
+            facility_id = row[2]
+            category = row[3]
+            project = row[4]
+            description = row[5]
+            priority = row[6]
+            est_cost = ((row[7].replace("$", "")).replace(",", ""))
+            est_year = row[8]
+            const_year = row[9]
+            const_cost = ((row[10].replace("$", "")).replace(",", ""))
+            debt_checkbox_val = row[12]
+            recur_checkbox_val = row[13]
+
+
+
+
+
+
+            add_new_project_from_csv(row_id, latitude, longitude, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val)
+
+            row_id = row_id +1
+
+        session.close()
+        return_obj['success'] = "success"
+
+        return JsonResponse(return_obj)
+
+
+# def reload_plotly_graphs(request):
+#     return_obj = {}
+#     if request.is_ajax() and request.method == 'POST':
+#         rev_scenario = request.POST['rev_scenario']
+#         start_date = request.POST['rev_scenario']
+#         end_date = request.POST['rev_scenario']
+#
+#         bargraph_plot = create_revenue_bargraph(rev_scenario)
+#
+#         piechart_plot = create_revenue_vs_requirements_piechart()
+#         sunburst_plot = create_revenue_vs_requirements_sunburst()
+#
+#         context = {
+#             'bargraph_plot': bargraph_plot,
+#             'piechart_plot': piechart_plot,
+#             'sunburst_plot': sunburst_plot,
+#             # 'can_add_projects': has_permission(request, 'add_projects')
+#         }
+#
+#         return render(request,'project_inventory/revenue_vs_requirements.html', context)
+#
+#
+
+
+
+
+

@@ -52,6 +52,22 @@ class ProjectInventory(TethysAppBase):
                 controller='project_inventory.ajax_controllers.save_updates_to_db'
             ),
             UrlMap(
+                name='import-projects-to-db',
+                url='project-inventory/admin/import-projects-to-db',
+                controller='project_inventory.ajax_controllers.import_projects_to_db'
+            ),
+            UrlMap(
+                name='import-revenue-to-db',
+                url='project-inventory/admin/import-revenue-to-db',
+                controller='project_inventory.ajax_controllers.import_revenue_to_db'
+            ),
+            # UrlMap(
+            #     name='reload-plotly-graphs',
+            #     url='project-inventory/revenue/reload-plotly-graphs',
+            #     controller='project_inventory.ajax_controllers.reload_plotly_graphs'
+            # ),
+
+            UrlMap(
                 name='capital-costs',
                 url='project-inventory/capital-costs',
                 controller='project_inventory.controllers.capital_costs'
@@ -70,6 +86,11 @@ class ProjectInventory(TethysAppBase):
                 name='revenue-vs-requirements',
                 url='project-inventory/revenue-vs-requirements',
                 controller='project_inventory.controllers.revenue_vs_requirements'
+            ),
+            UrlMap(
+                name='admin',
+                url='project-inventory/admin',
+                controller='project_inventory.controllers.admin'
             ),
         )
 

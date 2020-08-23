@@ -5,18 +5,24 @@ from tethys_sdk.permissions import login_required
 from tethys_sdk.gizmos import (Button, MapView, TextInput, DatePicker, 
                                SelectInput, DataTableView, MVDraw, MVView,
                                MVLayer)
+import os
 from tethys_sdk.permissions import permission_required, has_permission
 from .model import Project, Revenue, add_new_project, get_all_projects,get_all_revenue
 from .app import ProjectInventory as app
+from tethys_sdk.workspaces import app_workspace
 from .helpers import *
 import numpy as np
 
 
 # @login_required()
-def home(request):
+@app_workspace
+def home(request, app_workspace):
     """
     Controller for the app home page.
     """
+
+
+
     # Get list of projects and create projects MVLayer:
     projects = get_all_projects()
     ww_features = []
@@ -65,6 +71,11 @@ def home(request):
             fac_features.append(project_feature)
         else:
             w_features.append(project_feature)
+
+
+
+    new_file_path = os.path.join(app_workspace.path, "icon.gif")
+    print(app_workspace.path)
 
     # Define GeoJSON FeatureCollections
     sw_projects_feature_collection = {
@@ -143,6 +154,38 @@ def home(request):
         }}
     }}
 
+    fac_style = {'ol.style.Style': {
+        'image': {'ol.style.Icon':{
+            'src': '/static/project_inventory/images/icon.gif',
+            'scale': 0.03,
+            # 'points': 4,
+            # 'angle': np.pi / 4,
+            # 'fill': {'ol.style.Fill': {
+            #     'color': '#03fc45'
+            # }},
+            # 'stroke': {'ol.style.Stroke': {
+            #     'color': '#ffffff',
+            #     'width': 1
+            }},
+
+    }}
+
+    ww_style = {'ol.style.Style': {
+        'image': {'ol.style.Icon': {
+            'src': '/static/project_inventory/images/plainwhitemarker.jpg',
+            'scale': 0.1,
+            # 'points': 4,
+            # 'angle': np.pi / 4,
+            # 'fill': {'ol.style.Fill': {
+            #     'color': '#03fc45'
+            # }},
+            # 'stroke': {'ol.style.Stroke': {
+            #     'color': '#ffffff',
+            #     'width': 1
+        }},
+
+    }}
+
     w_style = {'ol.style.Style': {
         'image': {'ol.style.Circle': {
             'radius': 10,
@@ -156,34 +199,34 @@ def home(request):
         }}
     }}
 
-    ww_style = {'ol.style.Style': {
-        'image': {'ol.style.RegularShape': {
-            'radius': 10,
-            'points': 3,
-            'rotation': np.pi / 4,
-            'angle': 0,
-            'fill': {'ol.style.Fill': {
-                'color': '#fc0303'
-            }},
-            'stroke': {'ol.style.Stroke': {
-                'color': '#ffffff',
-                'width': 1
-            }}
-        }}
-    }}
+    # ww_style = {'ol.style.Style': {
+    #     'image': {'ol.style.RegularShape': {
+    #         'radius': 10,
+    #         'points': 3,
+    #         'rotation': np.pi / 4,
+    #         'angle': 0,
+    #         'fill': {'ol.style.Fill': {
+    #             'color': '#fc0303'
+    #         }},
+    #         'stroke': {'ol.style.Stroke': {
+    #             'color': '#ffffff',
+    #             'width': 1
+    #         }}
+    #     }}
+    # }}
 
-    fac_style = {'ol.style.Style': {
-        'image': {'ol.style.Circle': {
-            'radius': 10,
-            'fill': {'ol.style.Fill': {
-                'color': '#fcba03'
-            }},
-            'stroke': {'ol.style.Stroke': {
-                'color': '#ffffff',
-                'width': 1
-            }}
-        }}
-    }}
+    # fac_style = {'ol.style.Style': {
+    #     'image': {'ol.style.Circle': {
+    #         'radius': 10,
+    #         'fill': {'ol.style.Fill': {
+    #             'color': '#fcba03'
+    #         }},
+    #         'stroke': {'ol.style.Stroke': {
+    #             'color': '#ffffff',
+    #             'width': 1
+    #         }}
+    #     }}
+    # }}
 
     golf_style = {'ol.style.Style': {
         'image': {'ol.style.Circle': {
@@ -583,8 +626,8 @@ def list_projects(request):
             (
                 project.facility_id, project.category,
                 project.project, project.description, project.priority,
-                project.est_year, project.est_cost,
-                project.const_year, project.const_cost,
+                project.est_year, "$"+"{:,}".format(int(project.est_cost)),
+                project.const_year, "$"+"{:,}".format(int(project.const_cost[0])),
                 project.debt_checkbox_val, project.recur_checkbox_val,
             )
         )
@@ -665,15 +708,23 @@ def revenue(request):
 
 
 
-    bargraph_plot = create_revenue_bargraph()
-    piechart_plot = create_revenue_piechart()
+    bargraph_low_plot = create_revenue_bargraph("low")
+    bargraph_med_plot = create_revenue_bargraph("medium")
+    bargraph_high_plot = create_revenue_bargraph("high")
+    piechart_low_plot = create_revenue_piechart("low")
+    piechart_med_plot = create_revenue_piechart("medium")
+    piechart_high_plot = create_revenue_piechart("high")
     # sunburst_plot = create_revenue_sunburst()
 
 
 
     context = {
-        'bargraph_plot': bargraph_plot,
-        'piechart_plot': piechart_plot,
+        'bargraph_low_plot': bargraph_low_plot,
+        'bargraph_med_plot': bargraph_med_plot,
+        'bargraph_high_plot': bargraph_high_plot,
+        'piechart_low_plot': piechart_low_plot,
+        'piechart_med_plot': piechart_med_plot,
+        'piechart_high_plot': piechart_high_plot,
         # 'sunburst_plot': sunburst_plot,
         # 'can_add_projects': has_permission(request, 'add_projects')
     }
@@ -690,24 +741,33 @@ def revenue_vs_requirements(request):
     Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
     session = Session()
 
+    bargraph_low_plot = create_revenue_vs_requirements_bargraph("low")
+    bargraph_med_plot = create_revenue_vs_requirements_bargraph("medium")
+    bargraph_high_plot = create_revenue_vs_requirements_bargraph("high")
 
-    bargraph_plot = create_revenue_vs_requirements_bargraph()
-    piechart_plot = create_revenue_vs_requirements_piechart()
-    sunburst_plot = create_revenue_vs_requirements_sunburst()
+    bargraph_compare_low_plot = create_revenue_vs_req_compare_bargraph("low")
+    bargraph_compare_med_plot = create_revenue_vs_req_compare_bargraph("medium")
+    bargraph_compare_high_plot = create_revenue_vs_req_compare_bargraph("high")
 
+    # sunburst_plot = create_revenue_sunburst()
 
 
     context = {
-        'bargraph_plot': bargraph_plot,
-        'piechart_plot': piechart_plot,
-        'sunburst_plot': sunburst_plot,
+        'bargraph_low_plot': bargraph_low_plot,
+        'bargraph_med_plot': bargraph_med_plot,
+        'bargraph_high_plot': bargraph_high_plot,
+        'bargraph_compare_low_plot': bargraph_compare_low_plot,
+        'bargraph_compare_med_plot': bargraph_compare_med_plot,
+        'bargraph_compare_high_plot': bargraph_compare_high_plot,
+
+
         # 'can_add_projects': has_permission(request, 'add_projects')
     }
 
     session.close()
     return render(request, 'project_inventory/revenue_vs_requirements.html', context)
 
-def admin_page(request):
+def admin(request):
     """
     Controller for the Plots Page.
     """
@@ -717,11 +777,11 @@ def admin_page(request):
     session = Session()
 
     add_rev_button = Button(
-        display_text='Add',
+        display_text='Add Revenues',
         name='add-button',
         icon='glyphicon glyphicon-plus',
         style='success',
-        attributes={'onclick': 'add_revenue_data();'},
+        attributes={'onclick': 'importRevenueToDb();'},
         submit=True
     )
 
@@ -730,14 +790,14 @@ def admin_page(request):
         name='add-button',
         icon='glyphicon glyphicon-plus',
         style='success',
-        attributes={'onclick': 'add_proj_data();'},
+        attributes={'onclick': 'importProjectsToDb();'},
         submit=True
     )
 
 
     context = {
-        'add-rev-btn':add_rev_button,
-        'add-proj-btn': add_proj_button,
+        'add_rev_button':add_rev_button,
+        'add_project_button': add_proj_button,
     }
 
     session.close()
