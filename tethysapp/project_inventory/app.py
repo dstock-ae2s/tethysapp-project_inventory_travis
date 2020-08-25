@@ -8,7 +8,7 @@ class ProjectInventory(TethysAppBase):
     Tethys app class for Project Inventory.
     """
 
-    name = 'Watford City Capital Improvements Plan'
+    name = 'Watford City Comprehensive Plan'
     index = 'project_inventory:home'
     icon = 'project_inventory/images/Watford_City_Logo_black.png'
     package = 'project_inventory'

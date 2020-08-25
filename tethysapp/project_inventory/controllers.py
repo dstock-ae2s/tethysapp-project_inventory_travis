@@ -845,7 +845,7 @@ def capital_costs(request):
     )
 
     bargraph_px.update_layout(
-        yaxis=dict(title='Construction Cost (USD)', ),
+        yaxis=dict(title='Capital Cost (USD)', ),
         xaxis=dict(title='Construction Year'),
         legend=dict(title='Category')
     )
@@ -1426,7 +1426,7 @@ def revenue_vs_requirements(request):
     bargraphc_high_px.update_layout(
         yaxis=dict(title='Monetary Value (USD)'),
         xaxis=dict(title='Year'),
-        legend=dict(title='Deficit or Surplus')
+        legend=dict(title='Annual')
     )
     bargraphc_med_px = px.bar(
         dfdiff,
@@ -1444,7 +1444,7 @@ def revenue_vs_requirements(request):
     bargraphc_med_px.update_layout(
         yaxis=dict(title='Monetary Value (USD)'),
         xaxis=dict(title='Year'),
-        legend=dict(title='Deficit or Surplus')
+        legend=dict(title='Annual')
     )
     bargraphc_low_px = px.bar(
         dfdiff,
@@ -1462,7 +1462,7 @@ def revenue_vs_requirements(request):
     bargraphc_low_px.update_layout(
         yaxis=dict(title='Monetary Value (USD)'),
         xaxis=dict(title='Year'),
-        legend=dict(title='Deficit or Surplus')
+        legend=dict(title='Annual')
     )
 
     bargraph_compare_high_plot = PlotlyView(bargraphc_high_px, height=height, width=width)
