@@ -124,3 +124,8 @@ function ajax_update_database_with_file(ajax_url, ajax_data,div_id) {
     });
     return xhr;
 }
+
+function showChartLoadingModal() {
+//    document.getElementById('chart-loading-modal').hidden = false;
+    $("#chart-loading-modal").modal('show');
+}

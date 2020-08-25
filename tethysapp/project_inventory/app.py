@@ -10,7 +10,7 @@ class ProjectInventory(TethysAppBase):
 
     name = 'Watford City Capital Improvements Plan'
     index = 'project_inventory:home'
-    icon = 'project_inventory/images/Watford_City_Logo-white.png'
+    icon = 'project_inventory/images/Watford_City_Logo_black.png'
     package = 'project_inventory'
     root_url = 'project-inventory'
     color = '#244C96'
@@ -33,13 +33,28 @@ class ProjectInventory(TethysAppBase):
             ),
             UrlMap(
                 name='add_project',
-                url='project-inventory/projects/add',
+                url='project-inventory/projects/add_project',
                 controller='project_inventory.controllers.add_facility'
             ),
             UrlMap(
                 name='projects',
                 url='project-inventory/projects',
                 controller='project_inventory.controllers.list_projects'
+            ),
+            UrlMap(
+                name='list-revenue',
+                url='project-inventory/list-revenue',
+                controller='project_inventory.controllers.list_revenue'
+            ),
+            UrlMap(
+                name='get-project-categorized-list',
+                url='project-inventory/get-project-categorized-list',
+                controller='project_inventory.ajax_controllers.get_project_categorized_list'
+            ),
+            UrlMap(
+                name='save-cat-updates-to-db',
+                url='project-inventory/save-cat-updates-to-db',
+                controller='project_inventory.ajax_controllers.save_cat_updates_to_db'
             ),
             UrlMap(
                 name='get-project-list',
@@ -86,6 +101,11 @@ class ProjectInventory(TethysAppBase):
                 name='revenue-vs-requirements',
                 url='project-inventory/revenue-vs-requirements',
                 controller='project_inventory.controllers.revenue_vs_requirements'
+            ),
+            UrlMap(
+                name='export',
+                url='project-inventory/export',
+                controller='project_inventory.controllers.export'
             ),
             UrlMap(
                 name='admin',
