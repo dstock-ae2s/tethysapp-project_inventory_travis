@@ -836,14 +836,11 @@ def capital_costs(request):
         color_discrete_map={
             "Water": "#056eb7",
             "Wastewater": "#b3c935",
-            "Existing Debt": "#8065ba",
+            "Existing Debt": "#001f5b",
             "Facilities": "#074768",
             "Golf": "#749f34",
             "Transportation": "#ac162c",
             "Stormwater": "#F78F07"}
-
-        # colors="black"
-        # name='Category',
         # title="Future Project Costs"
     )
 
@@ -866,11 +863,12 @@ def capital_costs(request):
         color_discrete_map={
             "Water": "#056eb7",
             "Wastewater": "#b3c935",
-            "Existing Debt": "#8065ba",
+            "Existing Debt": "#001f5b",
             "Facilities": "#074768",
             "Golf": "#749f34",
             "Transportation": "#ac162c",
             "Stormwater": "#F78F07"}
+        # title="Future Project Costs"
     )
 
     piechart_plot = PlotlyView(piechart_px, height=height, width=width)
@@ -884,15 +882,12 @@ def capital_costs(request):
         color_discrete_map={
             "Water": "#056eb7",
             "Wastewater": "#b3c935",
-            "Existing Debt": "#8065ba",
+            "Existing Debt": "#001f5b",
             "Facilities": "#074768",
             "Golf": "#749f34",
             "Transportation": "#ac162c",
             "Stormwater": "#F78F07"}
-        # text=df["Project"],
-        # customdata=df["Construction Year"],
-        # hovertemplate="Facility ID: %{label} <br>Project: %{path[2]} <br>Construction Year: %{customdata} <br>Cost: %{value}"
-
+        # title="Future Project Costs"
     )
 
     sunburst_plot = PlotlyView(sunburst_px, height=height, width=width)
@@ -959,9 +954,9 @@ def revenue_requirements(request):
             "Wastewater": "#b3c935",
             "Existing Debt": "#001f5b",
             "Facilities": "#074768",
-            "Golf": "#ac162c",
-            "Transportation": "#232525",
-            "Storm": "#F78F07"}
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
+            "Stormwater": "#F78F07"}
         # title="Future Project Costs"
     )
 
@@ -985,9 +980,10 @@ def revenue_requirements(request):
             "Wastewater": "#b3c935",
             "Existing Debt": "#001f5b",
             "Facilities": "#074768",
-            "Golf": "#ac162c",
-            "Transportation": "#232525",
-            "Storm": "#F78F07"}
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
+            "Stormwater": "#F78F07"}
+        # title="Future Project Costs"
     )
 
     piechart_plot = PlotlyView(piechart_px, height=height, width=width)
@@ -1003,10 +999,10 @@ def revenue_requirements(request):
             "Wastewater": "#b3c935",
             "Existing Debt": "#001f5b",
             "Facilities": "#074768",
-            "Golf": "#ac162c",
-            "Transportation": "#232525",
-            "Storm": "#F78F07"}
-
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
+            "Stormwater": "#F78F07"}
+        # title="Future Project Costs"
     )
 
     sunburst_plot = PlotlyView(sunburst_px, height=height, width=width)
@@ -1141,6 +1137,9 @@ def revenue(request):
             "Special Assessments": "#074768",
             "Utility Revenue": "#ac162c"}
     )
+    piechart_high_px.update_layout(
+        legend=dict(title='Source of Revenue')
+    )
 
     piechart_high_plot = PlotlyView(piechart_high_px, height=height, width=width)
 
@@ -1248,7 +1247,7 @@ def revenue_vs_requirements(request):
         color_discrete_map={
             "Water": "#056eb7",
             "Wastewater": "#b3c935",
-            "Existing Debt": "#8065ba",
+            "Existing Debt": "#001f5b",
             "Facilities": "#074768",
             "Golf": "#749f34",
             "Transportation": "#ac162c",
@@ -1273,8 +1272,8 @@ def revenue_vs_requirements(request):
             "Wastewater": "#b3c935",
             "Existing Debt": "#001f5b",
             "Facilities": "#074768",
-            "Golf": "#ac162c",
-            "Transportation": "#232525",
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
             "Stormwater": "#F78F07"}
         # title="Future Project Costs"
     )
@@ -1296,8 +1295,8 @@ def revenue_vs_requirements(request):
             "Wastewater": "#b3c935",
             "Existing Debt": "#001f5b",
             "Facilities": "#074768",
-            "Golf": "#ac162c",
-            "Transportation": "#232525",
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
             "Stormwater": "#F78F07"}
         # title="Future Project Costs"
     )
