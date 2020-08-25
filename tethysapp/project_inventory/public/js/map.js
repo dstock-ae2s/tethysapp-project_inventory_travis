@@ -169,20 +169,20 @@ function saveCatDataToDB () {
     var debt_checkbox_list = [];
     var recur_checkbox_list = [];
 
-    var project_names = document.querySelectorAll('.project-name');
+    var project_names = document.querySelectorAll('.projectc-name');
 
     for (var i = 1; i <= project_names.length; i++) {
 
-        project_name = document.getElementById( i+'-project-name').value;
-        est_cost = document.getElementById(i+'-project-estcost').value;
-        const_year = document.getElementById(i+'-project-constyear').value;
-        facility_id = document.getElementById(i+'-project-facilityid').value;
-        description = document.getElementById(i+'-project-description').value;
-        priority = document.getElementById(i+'-project-priority').value;
-        const_cost = document.getElementById(i+'-project-constcost').value;
-        est_year = document.getElementById(i+'-project-estyear').value;
-        debt_is_checkbox = document.getElementById(i+'-debt-checkbox');
-        recur_is_checkbox = document.getElementById(i+'-recur-checkbox');
+        project_name = document.getElementById( i+'-projectc-name').value;
+        est_cost = document.getElementById(i+'-projectc-estcost').value;
+        const_year = document.getElementById(i+'-projectc-constyear').value;
+        facility_id = document.getElementById(i+'-projectc-facilityid').value;
+        description = document.getElementById(i+'-projectc-description').value;
+        priority = document.getElementById(i+'-projectc-priority').value;
+        const_cost = document.getElementById(i+'-projectc-constcost').value;
+        est_year = document.getElementById(i+'-projectc-estyear').value;
+        debt_is_checkbox = document.getElementById(i+'-debtc-checkbox');
+        recur_is_checkbox = document.getElementById(i+'-recurc-checkbox');
 
         if (debt_is_checkbox.checked==true){
             debt_is_checkbox=true;
@@ -237,7 +237,7 @@ function saveCatDataToDB () {
 
     var save_cat_updates_to_db = ajax_update_database_with_file("save-cat-updates-to-db", data); //Submitting the data through the ajax function, see main.js for the helper function.
     save_cat_updates_to_db.done(function(return_data){
-            
+
 
 
 
@@ -426,19 +426,19 @@ function updateCategorizedModal(return_data){
         console.log(project_const_cost_list)
 
         html += '<tr id="row-'+(i+1)+'">'+
-                    '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-facilityid" value="'+ project_facility_id_list[i] + '" disabled></td>' +
-                    '<td><input class="edit-fields project-name" type="text" id="' + (i+1) +'-project-name" value="'+ project_name_list[i] + '" disabled></td>' +
-                    '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-priority" value="'+ project_priority_list[i] + '" disabled></td>' +
-                    '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-description" value="'+ project_description_list[i] + '" disabled></td>' +
-                    '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-estyear" value="'+ project_est_year_list[i] + '" disabled></td>' +
-                    '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-estcost" value="'+ project_est_cost_list[i] + '" disabled></td>' +
-                    '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-constyear" value="'+ project_const_year_list[i] + '" disabled></td>' +
-                    '<td><input class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="'+ project_const_cost_list[i] + '" disabled></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox"'+ debt_is_checked + 'disabled></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox"'+ recur_is_checked + 'disabled></td>' +
-                    '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopCatEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="submit-edit-region" id="edit-button-'+(i+1)+'" onclick="editCatRow('+(i+1)+');" class="btn btn-warning submit-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="submit-delete-region" id="delete-button-'+(i+1)+'" onclick="deleteCatRow('+(i+1)+', this);" class="btn btn-danger submit-delete-region" role="button">'+
+                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-facilityid" value="'+ project_facility_id_list[i] + '" disabled></td>' +
+                    '<td><input class="cedit-fields projectc-name" type="text" id="' + (i+1) +'-projectc-name" value="'+ project_name_list[i] + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-priority" value="'+ project_priority_list[i] + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-description" value="'+ project_description_list[i] + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-estyear" value="'+ project_est_year_list[i] + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-estcost" value="'+ numToCurrency(project_est_cost_list[i]) + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-constyear" value="'+ project_const_year_list[i] + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-constcost" value="'+ numToCurrency(project_const_cost_list[i]) + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="checkbox" id="' + (i+1) +'-debtc-checkbox"'+ debt_is_checked + 'disabled></td>' +
+                    '<td><input class="cedit-fields" type="checkbox" id="' + (i+1) +'-recurc-checkbox"'+ recur_is_checked + 'disabled></td>' +
+                    '<td class="table-button"><div"><a name="csubmit-stop-edit-region" style="display:none;" id="cstop-edit-button-'+(i+1)+'" onclick="stopCatEditRow('+(i+1)+');" class="btn btn-success csubmit-stop-edit-region" role="button">'+
+                    '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="csubmit-edit-region" id="cedit-button-'+(i+1)+'" onclick="editCatRow('+(i+1)+');" class="btn btn-warning csubmit-edit-region" role="button">'+
+                    '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="csubmit-delete-region" id="cdelete-button-'+(i+1)+'" onclick="deleteCatRow('+(i+1)+', this);" class="btn btn-danger csubmit-delete-region" role="button">'+
                     '<span class="glyphicon glyphicon-remove"></span> Delete </a>'+
                     '</div>'+
                     '</td>'+
@@ -453,12 +453,11 @@ function updateCategorizedModal(return_data){
 function editCatRow (row_num){
     console.log("In edit row")
 
-    document.getElementById('stop-edit-button-'+row_num).style.display = 'table-row';
-    document.getElementById('delete-button-'+row_num).disabled = true;
+    document.getElementById('cstop-edit-button-'+row_num).style.display = 'inline-block';
+    document.getElementById('cdelete-button-'+row_num).disabled = true;
 
-    var delete_buttons = document.querySelectorAll('.submit-delete-region');
-    var edit_buttons = document.querySelectorAll('.submit-edit-region');
-
+    var delete_buttons = document.querySelectorAll('.csubmit-delete-region');
+    var edit_buttons = document.querySelectorAll('.csubmit-edit-region');
 
     for (var i = 0; i < delete_buttons.length; i++) {
         delete_buttons[i].style.backgroundColor = "gray";
@@ -468,63 +467,66 @@ function editCatRow (row_num){
         edit_buttons[j].style.display = 'none';
 
     };
-    document.getElementById(row_num+'-project-name').disabled = false;
-    document.getElementById(row_num+'-project-name').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-name').disabled = false;
+    document.getElementById(row_num+'-projectc-name').style.border = '1px solid';
 
-    document.getElementById(row_num+'-project-estcost').disabled = false;
-    document.getElementById(row_num+'-project-estcost').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-estcost').disabled = false;
+    document.getElementById(row_num+'-projectc-estcost').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-estcost').value = currencyToNumber(document.getElementById(row_num+'-projectc-estcost').value);
 
-    document.getElementById(row_num+'-project-constyear').disabled = false;
-    document.getElementById(row_num+'-project-constyear').style.border = '1px solid';
 
-    document.getElementById(row_num+'-project-facilityid').disabled = false;
-    document.getElementById(row_num+'-project-facilityid').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-constyear').disabled = false;
+    document.getElementById(row_num+'-projectc-constyear').style.border = '1px solid';
 
-    document.getElementById(row_num+'-project-description').disabled = false;
-    document.getElementById(row_num+'-project-description').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-facilityid').disabled = false;
+    document.getElementById(row_num+'-projectc-facilityid').style.border = '1px solid';
 
-    document.getElementById(row_num+'-project-priority').disabled = false;
-    document.getElementById(row_num+'-project-priority').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-description').disabled = false;
+    document.getElementById(row_num+'-projectc-description').style.border = '1px solid';
 
-    document.getElementById(row_num+'-project-estyear').disabled = false;
-    document.getElementById(row_num+'-project-estyear').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-priority').disabled = false;
+    document.getElementById(row_num+'-projectc-priority').style.border = '1px solid';
 
-    document.getElementById(row_num+'-project-constcost').disabled = false;
-    document.getElementById(row_num+'-project-constcost').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-estyear').disabled = false;
+    document.getElementById(row_num+'-projectc-estyear').style.border = '1px solid';
 
-    document.getElementById(row_num+'-debt-checkbox').disabled = false;
-    document.getElementById(row_num+'-debt-checkbox').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-constcost').disabled = false;
+    document.getElementById(row_num+'-projectc-constcost').style.border = '1px solid';
+    document.getElementById(row_num+'-projectc-constcost').value = currencyToNumber(document.getElementById(row_num+'-projectc-constcost').value);
 
-    document.getElementById(row_num+'-recur-checkbox').disabled = false;
-    document.getElementById(row_num+'-recur-checkbox').style.border = '1px solid';
+    document.getElementById(row_num+'-debtc-checkbox').disabled = false;
+    document.getElementById(row_num+'-debtc-checkbox').style.border = '1px solid';
 
-    $('#'+row_num+'-project-estyear').change(function(){
-        this_est_cost = parseFloat(document.getElementById(row_num+'-project-estcost').value)
-        this_const_year = parseFloat(document.getElementById(row_num+'-project-constyear').value)
-        this_est_year = parseFloat(document.getElementById(row_num+'-project-estyear').value)
-        document.getElementById(row_num+'-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
+    document.getElementById(row_num+'-recurc-checkbox').disabled = false;
+    document.getElementById(row_num+'-recurc-checkbox').style.border = '1px solid';
+
+    $('#'+row_num+'-projectc-estyear').change(function(){
+        this_est_cost = parseFloat(document.getElementById(row_num+'-projectc-estcost').value)
+        this_const_year = parseFloat(document.getElementById(row_num+'-projectc-constyear').value)
+        this_est_year = parseFloat(document.getElementById(row_num+'-projectc-estyear').value)
+        document.getElementById(row_num+'-projectc-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
     });
-    $('#'+row_num+'-project-estcost').change(function(){
-        this_est_cost = parseFloat(document.getElementById(row_num+'-project-estcost').value)
-        this_const_year = parseFloat(document.getElementById(row_num+'-project-constyear').value)
-        this_est_year = parseFloat(document.getElementById(row_num+'-project-estyear').value)
-        document.getElementById(row_num+'-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
+    $('#'+row_num+'-projectc-estcost').change(function(){
+        this_est_cost = parseFloat(document.getElementById(row_num+'-projectc-estcost').value)
+        this_const_year = parseFloat(document.getElementById(row_num+'-projectc-constyear').value)
+        this_est_year = parseFloat(document.getElementById(row_num+'-projectc-estyear').value)
+        document.getElementById(row_num+'-projectc-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
     });
-    $('#'+row_num+'-project-constyear').change(function(){
-        this_est_cost = parseFloat(document.getElementById(row_num+'-project-estcost').value)
-        this_const_year = parseFloat(document.getElementById(row_num+'-project-constyear').value)
-        this_est_year = parseFloat(document.getElementById(row_num+'-project-estyear').value)
-        document.getElementById(row_num+'-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
+    $('#'+row_num+'-projectc-constyear').change(function(){
+        this_est_cost = parseFloat(document.getElementById(row_num+'-projectc-estcost').value)
+        this_const_year = parseFloat(document.getElementById(row_num+'-projectc-constyear').value)
+        this_est_year = parseFloat(document.getElementById(row_num+'-projectc-estyear').value)
+        document.getElementById(row_num+'-projectc-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
     });
 
-    $('#'+row_num+'-debt-checkbox').change(function(){
-        if(document.getElementById(row_num+'-debt-checkbox').value =="on"){
-            document.getElementById(row_num+'-recur-checkbox').checked = false;
+    $('#'+row_num+'-debtc-checkbox').change(function(){
+        if(document.getElementById(row_num+'-debtc-checkbox').value =="on"){
+            document.getElementById(row_num+'-recurc-checkbox').checked = false;
         }
     });
-    $('#'+row_num+'-recur-checkbox').change(function(){
-        if(document.getElementById(row_num+'-recur-checkbox').value == "on"){
-            document.getElementById(row_num+'-debt-checkbox').checked = false;
+    $('#'+row_num+'-recurc-checkbox').change(function(){
+        if(document.getElementById(row_num+'-recurc-checkbox').value == "on"){
+            document.getElementById(row_num+'-debtc-checkbox').checked = false;
         }
     });
 
@@ -532,11 +534,11 @@ function editCatRow (row_num){
 
 function stopCatEditRow (row_num){
 
-    document.getElementById('stop-edit-button-'+row_num).style.display = 'none';
-    document.getElementById('delete-button-'+row_num).disabled = false;
+    document.getElementById('cstop-edit-button-'+row_num).style.display = 'none';
+    document.getElementById('cdelete-button-'+row_num).disabled = false;
 
-    var delete_buttons = document.querySelectorAll('.submit-delete-region');
-    var edit_buttons = document.querySelectorAll('.submit-edit-region');
+    var delete_buttons = document.querySelectorAll('.csubmit-delete-region');
+    var edit_buttons = document.querySelectorAll('.csubmit-edit-region');
 
 
     for (var i = 0; i < delete_buttons.length; i++) {
@@ -544,38 +546,40 @@ function stopCatEditRow (row_num){
         delete_buttons[i].style.borderColor = "#d43f3a";
     };
     for (var j = 0; j < edit_buttons.length; j++){
-        edit_buttons[j].style.display = 'table-row';
+        edit_buttons[j].style.display = 'inline-block';
 
     };
-    document.getElementById(row_num+'-project-name').disabled = true;
-    document.getElementById(row_num+'-project-name').style.border = 'none';
+    document.getElementById(row_num+'-projectc-name').disabled = true;
+    document.getElementById(row_num+'-projectc-name').style.border = 'none';
 
-    document.getElementById(row_num+'-project-estcost').disabled = true;
-    document.getElementById(row_num+'-project-estcost').style.border = 'none';
+    document.getElementById(row_num+'-projectc-estcost').disabled = true;
+    document.getElementById(row_num+'-projectc-estcost').style.border = 'none';
+    document.getElementById(row_num+'-projectc-estcost').value = numToCurrency(document.getElementById(row_num+'-projectc-estcost').value);
 
-    document.getElementById(row_num+'-project-constyear').disabled = true;
-    document.getElementById(row_num+'-project-constyear').style.border = 'none';
+    document.getElementById(row_num+'-projectc-constyear').disabled = true;
+    document.getElementById(row_num+'-projectc-constyear').style.border = 'none';
 
-    document.getElementById(row_num+'-project-facilityid').disabled = true;
-    document.getElementById(row_num+'-project-facilityid').style.border = 'none';
+    document.getElementById(row_num+'-projectc-facilityid').disabled = true;
+    document.getElementById(row_num+'-projectc-facilityid').style.border = 'none';
 
-    document.getElementById(row_num+'-project-description').disabled = true;
-    document.getElementById(row_num+'-project-description').style.border = 'none';
+    document.getElementById(row_num+'-projectc-description').disabled = true;
+    document.getElementById(row_num+'-projectc-description').style.border = 'none';
 
-    document.getElementById(row_num+'-project-priority').disabled = true;
-    document.getElementById(row_num+'-project-priority').style.border = 'none';
+    document.getElementById(row_num+'-projectc-priority').disabled = true;
+    document.getElementById(row_num+'-projectc-priority').style.border = 'none';
 
-    document.getElementById(row_num+'-project-estyear').disabled = true;
-    document.getElementById(row_num+'-project-estyear').style.border = 'none';
+    document.getElementById(row_num+'-projectc-estyear').disabled = true;
+    document.getElementById(row_num+'-projectc-estyear').style.border = 'none';
 
-    document.getElementById(row_num+'-project-constcost').disabled = true;
-    document.getElementById(row_num+'-project-constcost').style.border = 'none';
+    document.getElementById(row_num+'-projectc-constcost').disabled = true;
+    document.getElementById(row_num+'-projectc-constcost').style.border = 'none';
+    document.getElementById(row_num+'-projectc-constcost').value = numToCurrency(document.getElementById(row_num+'-projectc-constcost').value);
 
-    document.getElementById(row_num+'-debt-checkbox').disabled = true;
-    document.getElementById(row_num+'-debt-checkbox').style.border = 'none';
+    document.getElementById(row_num+'-debtc-checkbox').disabled = true;
+    document.getElementById(row_num+'-debtc-checkbox').style.border = 'none';
 
-    document.getElementById(row_num+'-recur-checkbox').disabled = true;
-    document.getElementById(row_num+'-recur-checkbox').style.border = 'none';
+    document.getElementById(row_num+'-recurc-checkbox').disabled = true;
+    document.getElementById(row_num+'-recurc-checkbox').style.border = 'none';
 };
 
 function deleteRow (row_num){
@@ -607,23 +611,23 @@ function deleteCatRow (row_num, test_id){
     console.log((test_id.id).length);
     console.log(parseInt((test_id.id).slice((test_id.id).lastIndexOf("-")-(test_id.id).length+1)));
     var new_row_num = parseInt((test_id.id).slice((test_id.id).lastIndexOf("-")-(test_id.id).length+1));
-    var project_names = document.querySelectorAll('.project-name');
+    var project_names = document.querySelectorAll('.projectc-name');
     document.getElementById("project-list-table-2").deleteRow(new_row_num);
 
     for (var i=new_row_num+1; i<=project_names.length; i++){
-        document.getElementById(i+'-project-name').id = (i-1)+'-project-name';
-        document.getElementById(i+'-project-estcost').id = (i-1)+'-project-estcost';
-        document.getElementById(i+'-project-constyear').id =  (i-1)+'-project-constyear';
-        document.getElementById(i+'-project-facilityid').id = (i-1)+'-project-facilityid';
-        document.getElementById(i+'-project-description').id = (i-1)+'-project-description';
-        document.getElementById(i+'-project-priority').id =(i-1)+'-project-priority';
-        document.getElementById(i+'-project-estyear').id = (i-1)+'-project-estyear';
-        document.getElementById(i+'-project-constcost').id =(i-1)+'-project-constcost';
-        document.getElementById(i+'-debt-checkbox').id =(i-1)+'-debt-checkbox';
-        document.getElementById(i+'-recur-checkbox').id =(i-1)+'-recur-checkbox';
-        document.getElementById('stop-edit-button-'+i).id ='stop-edit-button-'+(i-1);
-        document.getElementById('edit-button-'+i).id ='edit-button-'+(i-1);
-        document.getElementById('delete-button-'+i).id ='delete-button-'+(i-1);
+        document.getElementById(i+'-projectc-name').id = (i-1)+'-projectc-name';
+        document.getElementById(i+'-projectc-estcost').id = (i-1)+'-projectc-estcost';
+        document.getElementById(i+'-projectc-constyear').id =  (i-1)+'-projectc-constyear';
+        document.getElementById(i+'-projectc-facilityid').id = (i-1)+'-projectc-facilityid';
+        document.getElementById(i+'-projectc-description').id = (i-1)+'-projectc-description';
+        document.getElementById(i+'-projectc-priority').id =(i-1)+'-projectc-priority';
+        document.getElementById(i+'-projectc-estyear').id = (i-1)+'-projectc-estyear';
+        document.getElementById(i+'-projectc-constcost').id =(i-1)+'-projectc-constcost';
+        document.getElementById(i+'-debtc-checkbox').id =(i-1)+'-debtc-checkbox';
+        document.getElementById(i+'-recurc-checkbox').id =(i-1)+'-recurc-checkbox';
+        document.getElementById('cstop-edit-button-'+i).id ='cstop-edit-button-'+(i-1);
+        document.getElementById('cedit-button-'+i).id ='cedit-button-'+(i-1);
+        document.getElementById('cdelete-button-'+i).id ='cdelete-button-'+(i-1);
     }
 };
 
@@ -638,19 +642,19 @@ function addCatProjectRow (){
         i = numrows;
 
         html += '<tr id="row-'+(i+1)+'">'+
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-facilityid" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields project-name" type="text" id="' + (i+1) +'-project-name" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-priority" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-description" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-estyear" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-estcost" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constyear" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="" ></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox" value="true"></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox" value="true"></td>' +
-                    '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopCatEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="submit-edit-region" id="edit-button-'+(i+1)+'" onclick="editCatRow('+(i+1)+');" class="btn btn-warning submit-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="submit-delete-region" id="delete-button-'+(i+1)+'" onclick="deleteCatRow('+(i+1)+',this);" class="btn btn-danger submit-delete-region" role="button">'+
+                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-facilityid" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields projectc-name" type="text" id="' + (i+1) +'-projectc-name" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-priority" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-description" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-estyear" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-estcost" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-constyear" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-constcost" value="" ></td>' +
+                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debtc-checkbox" value="true"></td>' +
+                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recurc-checkbox" value="true"></td>' +
+                    '<td class="table-button"><div"><a name="csubmit-stop-edit-region" style="display:none;" id="cstop-edit-button-'+(i+1)+'" onclick="stopCatEditRow('+(i+1)+');" class="btn btn-success csubmit-stop-edit-region" role="button">'+
+                    '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="csubmit-edit-region" id="cedit-button-'+(i+1)+'" onclick="editCatRow('+(i+1)+');" class="btn btn-warning csubmit-edit-region" role="button">'+
+                    '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="csubmit-delete-region" id="cdelete-button-'+(i+1)+'" onclick="deleteCatRow('+(i+1)+',this);" class="btn btn-danger csubmit-delete-region" role="button">'+
                     '<span class="glyphicon glyphicon-remove"></span> Delete </a>'+
                     '</div>'+
                     '</td>'+

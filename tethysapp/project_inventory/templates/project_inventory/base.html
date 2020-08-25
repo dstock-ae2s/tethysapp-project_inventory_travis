@@ -49,9 +49,9 @@
   <li class="{% if request.path == add_project_url %}active{% endif %}"><a href="{{ add_project_url }}">Add Project</a></li>
 
   <li class="title">Analysis</li>
-  <li class="{% if request.path == capital_costs_url %}active{% endif %}"><a href="{{ capital_costs_url }}">Capital Costs</a></li>
-  <li class="{% if request.path == revenue_requirements_url %}active{% endif %}"><a href="{{ revenue_requirements_url }}">Revenue Requirements</a></li>
-  <li class="{% if request.path == revenue_url %}active{% endif %}"><a href="{{ revenue_url }}">Revenue</a></li>
+  <li class="{% if request.path == capital_costs_url %}active{% endif %}"><a onclick="showChartLoadingModal();" href="{{ capital_costs_url }}">Capital Costs</a></li>
+  <li class="{% if request.path == revenue_requirements_url %}active{% endif %}"><a onclick="showChartLoadingModal();" href="{{ revenue_requirements_url }}">Revenue Requirements</a></li>
+  <li class="{% if request.path == revenue_url %}active{% endif %}"><a onclick="showChartLoadingModal();" href="{{ revenue_url }}">Revenue</a></li>
   <li class="{% if request.path == revenue_vs_requirements_url %}active{% endif %}"><a onclick="showChartLoadingModal();" href="{{ revenue_vs_requirements_url }}">Revenue vs. Requirements</a></li>
 
   <li class="title">Admin</li>

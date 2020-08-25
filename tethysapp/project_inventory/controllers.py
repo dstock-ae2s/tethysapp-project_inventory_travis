@@ -740,8 +740,8 @@ def list_projects(request):
             (
                 project.facility_id, project.category,
                 project.project, project.description, project.priority,
-                project.est_year, "$"+"{:,}".format(int(project.est_cost)),
-                project.const_year, "$"+"{:,}".format(int(project.const_cost[0])),
+                project.est_year, "$"+"{:,}".format(round(float(project.est_cost))),
+                project.const_year, "$"+"{:,}".format(round(float(project.const_cost[0]))),
                 project.debt_checkbox_val, project.recur_checkbox_val,
             )
         )
@@ -797,17 +797,105 @@ def list_revenue(request):
 
 # @login_required()
 def capital_costs(request):
+    height = '520px'
+    width = '100%'
     """
     Controller for the Plots Page.
     """
     # Get projects from database
     Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
     session = Session()
+    projects = session.query(Project).all()
+
+    df = pd.DataFrame(columns=['Construction Year', 'Projected Cost', 'Facility ID', 'Project', 'Category'])
+
+    for project in projects:
+
+        if project.recur_checkbox_val == "true":
+            y = 0
+            for x in range(len(project.const_cost) - 1):
+                df = df.append({'Construction Year': int(project.const_year) + y,
+                                'Projected Cost': int(json.loads(project.const_cost[x + 1])),
+                                'Facility ID': project.facility_id, 'Project': project.project,
+                                'Category': project.category}, ignore_index=True)
+                y = y + 1
+
+        else:
+            df = df.append(
+                {'Construction Year': int(project.const_year), 'Projected Cost': int(json.loads(project.const_cost[0])),
+                 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category},
+                ignore_index=True)
+
+    # Build up Plotly plot
+    bargraph_px = px.bar(
+        df,
+        hover_data=["Facility ID", "Category", "Project", "Projected Cost"],
+        x="Construction Year",
+        y="Projected Cost",
+        color='Category',
+        color_discrete_map={
+            "Water": "#056eb7",
+            "Wastewater": "#b3c935",
+            "Existing Debt": "#8065ba",
+            "Facilities": "#074768",
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
+            "Stormwater": "#F78F07"}
+
+        # colors="black"
+        # name='Category',
+        # title="Future Project Costs"
+    )
+
+    bargraph_px.update_layout(
+        yaxis=dict(title='Construction Cost (USD)', ),
+        xaxis=dict(title='Construction Year'),
+        legend=dict(title='Category')
+    )
+
+    bargraph_plot = PlotlyView(bargraph_px, height=height, width=width)
 
 
-    bargraph_plot = create_capital_costs_bargraph()
-    piechart_plot = create_capital_costs_piechart()
-    sunburst_plot = create_capital_costs_sunburst()
+    piechart_px = px.pie(
+        df,
+        values="Projected Cost",
+        names="Category",
+        labels="Category",
+        color="Category",
+        hover_data=["Category", "Facility ID", "Construction Year", "Projected Cost"],
+        color_discrete_map={
+            "Water": "#056eb7",
+            "Wastewater": "#b3c935",
+            "Existing Debt": "#8065ba",
+            "Facilities": "#074768",
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
+            "Stormwater": "#F78F07"}
+    )
+
+    piechart_plot = PlotlyView(piechart_px, height=height, width=width)
+
+    sunburst_px = px.sunburst(
+        df,
+        path=['Category', 'Facility ID', 'Project'],
+        values='Projected Cost',
+        color='Category',
+        labels=df["Category"],
+        color_discrete_map={
+            "Water": "#056eb7",
+            "Wastewater": "#b3c935",
+            "Existing Debt": "#8065ba",
+            "Facilities": "#074768",
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
+            "Stormwater": "#F78F07"}
+        # text=df["Project"],
+        # customdata=df["Construction Year"],
+        # hovertemplate="Facility ID: %{label} <br>Project: %{path[2]} <br>Construction Year: %{customdata} <br>Cost: %{value}"
+
+    )
+
+    sunburst_plot = PlotlyView(sunburst_px, height=height, width=width)
 
 
     context = {
@@ -824,15 +912,104 @@ def revenue_requirements(request):
     """
     Controller for the Plots Page.
     """
-    # Get projects from database
+    height = '520px'
+    width = '100%'
+    # Get objects from database
     Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
     session = Session()
+    projects = session.query(Project).all()
 
+    df = pd.DataFrame(columns=['Construction Year', 'Projected Cost', 'Facility ID', 'Project', 'Category'])
 
+    for project in projects:
 
-    bargraph_plot = create_revenue_requirements_bargraph()
-    piechart_plot = create_revenue_requirements_piechart()
-    sunburst_plot = create_revenue_requirements_sunburst()
+        if project.debt_checkbox_val == "true":
+            z = 1
+            for c in range(len(project.const_cost) - 1):
+                df = df.append({'Construction Year': int(project.const_year) + z,
+                                'Projected Cost': int(json.loads(project.const_cost[c + 1])),
+                                'Facility ID': project.facility_id, 'Project': project.project,
+                                'Category': project.category}, ignore_index=True)
+                z = z + 1
+
+        elif project.recur_checkbox_val == "true":
+            y = 0
+            for x in range(len(project.const_cost) - 1):
+                df = df.append({'Construction Year': int(project.const_year) + y,
+                                'Projected Cost': int(json.loads(project.const_cost[x + 1])),
+                                'Facility ID': project.facility_id, 'Project': project.project,
+                                'Category': project.category}, ignore_index=True)
+                y = y + 1
+
+        else:
+            df = df.append(
+                {'Construction Year': int(project.const_year), 'Projected Cost': int(json.loads(project.const_cost[0])),
+                 'Facility ID': project.facility_id, 'Project': project.project, 'Category': project.category},
+                ignore_index=True)
+
+    # Build up Plotly plot
+    bargraph_px = px.bar(
+        df,
+        hover_data=["Facility ID", "Category", "Project", "Projected Cost"],
+        x="Construction Year",
+        y="Projected Cost",
+        color='Category',
+        color_discrete_map={
+            "Water": "#056eb7",
+            "Wastewater": "#b3c935",
+            "Existing Debt": "#001f5b",
+            "Facilities": "#074768",
+            "Golf": "#ac162c",
+            "Transportation": "#232525",
+            "Storm": "#F78F07"}
+        # title="Future Project Costs"
+    )
+
+    bargraph_px.update_layout(
+        yaxis=dict(title='Revenue Required (USD)', ),
+        xaxis=dict(title='Year'),
+        legend=dict(title='Category')
+    )
+
+    bargraph_plot = PlotlyView(bargraph_px, height=height, width=width)
+
+    piechart_px = px.pie(
+        df,
+        values="Projected Cost",
+        labels="Category",
+        names="Category",
+        hover_data=["Facility ID", "Project", "Construction Year", "Projected Cost"],
+        color="Category",
+        color_discrete_map={
+            "Water": "#056eb7",
+            "Wastewater": "#b3c935",
+            "Existing Debt": "#001f5b",
+            "Facilities": "#074768",
+            "Golf": "#ac162c",
+            "Transportation": "#232525",
+            "Storm": "#F78F07"}
+    )
+
+    piechart_plot = PlotlyView(piechart_px, height=height, width=width)
+
+    sunburst_px = px.sunburst(
+        df,
+        path=['Category', 'Facility ID', 'Project'],
+        values='Projected Cost',
+        color='Category',
+        labels=df["Category"],
+        color_discrete_map={
+            "Water": "#056eb7",
+            "Wastewater": "#b3c935",
+            "Existing Debt": "#001f5b",
+            "Facilities": "#074768",
+            "Golf": "#ac162c",
+            "Transportation": "#232525",
+            "Storm": "#F78F07"}
+
+    )
+
+    sunburst_plot = PlotlyView(sunburst_px, height=height, width=width)
 
 
 
@@ -851,17 +1028,156 @@ def revenue(request):
     Controller for the Plots Page.
     """
     # Get projects from database
+    height = '520px'
+    width = '100%'
+
+    """
+    Generates a plotly view of projects
+    """
+
+    # Get objects from database
     Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
     session = Session()
+    revenue_list = session.query(Revenue).all()
+
+    dfhigh = pd.DataFrame(columns=['Scenario', 'Source', 'Monetary Value', 'Year'])
+    dfmed = pd.DataFrame(columns=['Scenario', 'Source', 'Monetary Value', 'Year'])
+    dflow = pd.DataFrame(columns=['Scenario', 'Source', 'Monetary Value', 'Year'])
 
 
+    for entry in revenue_list:
 
-    bargraph_low_plot = create_revenue_bargraph("low")
-    bargraph_med_plot = create_revenue_bargraph("medium")
-    bargraph_high_plot = create_revenue_bargraph("high")
-    piechart_low_plot = create_revenue_piechart("low")
-    piechart_med_plot = create_revenue_piechart("medium")
-    piechart_high_plot = create_revenue_piechart("high")
+        if entry.scenario == "High":
+            dfhigh = dfhigh.append({'Scenario': entry.scenario, 'Source': entry.revenue_source,
+                            'Monetary Value': int(json.loads(entry.monetary_Value)), 'Year': entry.year},
+                           ignore_index=True)
+        elif entry.scenario == "Medium":
+            dfmed = dfmed.append({'Scenario': entry.scenario, 'Source': entry.revenue_source,
+                            'Monetary Value': int(json.loads(entry.monetary_Value)), 'Year': entry.year},
+                           ignore_index=True)
+        elif entry.scenario == "Low":
+            dflow = dflow.append({'Scenario': entry.scenario, 'Source': entry.revenue_source,
+                            'Monetary Value': int(json.loads(entry.monetary_Value)), 'Year': entry.year},
+                           ignore_index=True)
+
+    # Build up Plotly plot
+    bargraph_low_px = px.bar(
+        dflow,
+        hover_data=["Source", "Monetary Value", "Year"],
+        x="Year",
+        y="Monetary Value",
+        color="Source",
+        color_discrete_map={
+            "GPT": "#056eb7",
+            "Highway Tax": "#b3c935",
+            "Sales Tax": "#001f5b",
+            "Special Assessments": "#074768",
+            "Utility Revenue": "#ac162c"}
+        # title="Revenue"
+    )
+
+    bargraph_low_px.update_layout(
+        yaxis=dict(title='Revenue (USD)'),
+        xaxis=dict(title='Year'),
+        legend=dict(title='Source of Revenue')
+    )
+    bargraph_med_px = px.bar(
+        dfmed,
+        hover_data=["Source", "Monetary Value", "Year"],
+        x="Year",
+        y="Monetary Value",
+        color="Source",
+        color_discrete_map={
+            "GPT": "#056eb7",
+            "Highway Tax": "#b3c935",
+            "Sales Tax": "#001f5b",
+            "Special Assessments": "#074768",
+            "Utility Revenue": "#ac162c"}
+        # title="Revenue"
+    )
+
+    bargraph_med_px.update_layout(
+        yaxis=dict(title='Revenue (USD)'),
+        xaxis=dict(title='Year'),
+        legend=dict(title='Source of Revenue')
+    )
+
+    bargraph_high_px = px.bar(
+        dfhigh,
+        hover_data=["Source", "Monetary Value", "Year"],
+        x="Year",
+        y="Monetary Value",
+        color="Source",
+        color_discrete_map={
+            "GPT": "#056eb7",
+            "Highway Tax": "#b3c935",
+            "Sales Tax": "#001f5b",
+            "Special Assessments": "#074768",
+            "Utility Revenue": "#ac162c"}
+        # title="Revenue"
+    )
+
+    bargraph_high_px.update_layout(
+        yaxis=dict(title='Revenue (USD)'),
+        xaxis=dict(title='Year'),
+        legend=dict(title='Source of Revenue')
+    )
+
+    bargraph_high_plot = PlotlyView(bargraph_high_px, height=height, width=width)
+    bargraph_med_plot = PlotlyView(bargraph_med_px, height=height, width=width)
+    bargraph_low_plot = PlotlyView(bargraph_low_px, height=height, width=width)
+
+    piechart_high_px = px.pie(
+        dfhigh,
+        values="Monetary Value",
+        labels="Source",
+        names="Source",
+        hover_data=["Year", "Source", "Monetary Value"],
+        color="Source",
+        color_discrete_map={
+            "GPT": "#056eb7",
+            "Highway Tax": "#b3c935",
+            "Sales Tax": "#001f5b",
+            "Special Assessments": "#074768",
+            "Utility Revenue": "#ac162c"}
+    )
+
+    piechart_high_plot = PlotlyView(piechart_high_px, height=height, width=width)
+
+    piechart_med_px = px.pie(
+        dfmed,
+        values="Monetary Value",
+        labels="Source",
+        names="Source",
+        hover_data=["Year", "Source", "Monetary Value"],
+        color="Source",
+        color_discrete_map={
+            "GPT": "#056eb7",
+            "Highway Tax": "#b3c935",
+            "Sales Tax": "#001f5b",
+            "Special Assessments": "#074768",
+            "Utility Revenue": "#ac162c"}
+    )
+
+    piechart_med_plot = PlotlyView(piechart_med_px, height=height, width=width)
+
+    piechart_low_px = px.pie(
+        dflow,
+        values="Monetary Value",
+        labels="Source",
+        names="Source",
+        hover_data=["Year", "Source", "Monetary Value"],
+        color="Source",
+        color_discrete_map={
+            "GPT": "#056eb7",
+            "Highway Tax": "#b3c935",
+            "Sales Tax": "#001f5b",
+            "Special Assessments": "#074768",
+            "Utility Revenue": "#ac162c"}
+    )
+
+    piechart_low_plot = PlotlyView(piechart_low_px, height=height, width=width)
+
     # sunburst_plot = create_revenue_sunburst()
 
 
@@ -998,17 +1314,17 @@ def revenue_vs_requirements(request):
 
     for entry in revenue_list:
 
-        if entry.scenario == "high":
+        if entry.scenario == "High":
 
             dfrevhigh = dfrevhigh.append({'Scenario': entry.scenario, 'Source': entry.revenue_source,
                                           'Monetary Value': int(json.loads(entry.monetary_Value)),
                                           'Year': int(entry.year)}, ignore_index=True)
-        elif entry.scenario == "medium":
+        elif entry.scenario == "Medium":
 
             dfrevmed = dfrevmed.append({'Scenario': entry.scenario, 'Source': entry.revenue_source,
                                         'Monetary Value': int(json.loads(entry.monetary_Value)),
                                         'Year': int(entry.year)}, ignore_index=True)
-        elif entry.scenario == "low":
+        elif entry.scenario == "Low":
 
             dfrevlow = dfrevlow.append({'Scenario': entry.scenario, 'Source': entry.revenue_source,
                                         'Monetary Value': int(json.loads(entry.monetary_Value)),

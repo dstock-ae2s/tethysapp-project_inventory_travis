@@ -45,11 +45,11 @@ def create_capital_costs_bargraph(height='520 px', width='100%'):
         color_discrete_map={
             "Water": "#056eb7",
             "Wastewater": "#b3c935",
-            "Existing Debt": "#001f5b",
+            "Existing Debt": "#8065ba",
             "Facilities": "#074768",
-            "Golf": "#ac162c",
-            "Transportation": "#232525",
-            "Storm": "#F78F07"}
+            "Golf": "#749f34",
+            "Transportation": "#ac162c",
+            "Stormwater": "#F78F07"}
 
         # colors="black"
         # name='Category',

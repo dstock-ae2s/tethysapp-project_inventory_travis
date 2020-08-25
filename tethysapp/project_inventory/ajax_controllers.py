@@ -81,13 +81,15 @@ def save_updates_to_db (request):
         Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
         session = Session()
 
+        # db_id =1
         project_list = get_all_projects()
         for project in project_list:
+            # project.id = db_id
             if project.facility_id == fac_id:
                 latitude = project.latitude
                 longitude = project.longitude
                 session.delete(project)
-
+            # db_id = db_id+1
         for i in range(len(project_name_list)):
             cost_array = []
 
@@ -228,10 +230,18 @@ def save_cat_updates_to_db (request):
         # Get connection/session to database
         Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
         session = Session()
-        db_id = 1
         project_list = get_all_projects()
+            # db_id = 1
+        # for p in project_list:
+        #     p.id = 0
+        #     p.id =
+
+
         for project in project_list:
-            db_id = db_id+1
+            # project.id = db_id
+            #
+            # db_id = db_id+1
+
             if project.category == category:
                 latitude = project.latitude
                 longitude = project.longitude
@@ -260,7 +270,7 @@ def save_cat_updates_to_db (request):
             print(project_est_cost_list[i])
             # Create new Project record
             new_project = Project(
-                id=db_id+1,
+                # id=db_id+1,
                 latitude=latitude,
                 longitude=longitude,
                 facility_id=project_facility_id_list[i],
@@ -292,22 +302,22 @@ def import_revenue_to_db(request):
         revenue_list = session.query(Revenue).all()
         row_id = len(revenue_list) +1
 
-        with open('/Users/tmcstraw/Downloads/Revenue.csv', newline='') as f:
+        with open('/Users/tmcstraw/Downloads/RevenueFinal.csv', newline='') as f:
             reader = csv.reader(f)
             data = list(reader)
-
+            newdata = (data[1:])
         print(data[0])
         print(data[1])
-        print(len(data))
+        print(len(newdata))
 
-        for row in data:
+        for row in newdata:
 
                 print(row[0])
                 clean_val = ((row[1].replace("$","")).replace(",",""))
                 print(row[2])
                 print(row[3])
 
-                add_new_revenue(row_id, row[3],row[2],clean_val,row[0])
+                add_new_revenue(row_id, row[3], row[2], clean_val, row[0])
                 row_id = row_id +1
 
         session.close()
@@ -325,7 +335,7 @@ def import_projects_to_db(request):
         project_list = session.query(Project).all()
         row_id = len(project_list) +1
 
-        with open('/Users/tmcstraw/Downloads/Costs.csv', newline='') as f:
+        with open('/Users/tmcstraw/Downloads/CostsFinal.csv', newline='') as f:
             reader = csv.reader(f)
             data = list(reader)
 
@@ -334,8 +344,18 @@ def import_projects_to_db(request):
         for row in newdata:
             print(row)
 
-            latitude = row[0]
-            longitude= row[1]
+            if row[0] == "":
+                lat = 0
+            else:
+                lat = row[0]
+            if row[1] == "":
+                lon = 0
+            else:
+                lon = row[1]
+
+
+            latitude = lat
+            longitude= lon
             facility_id = row[2]
             category = row[3]
             project = row[4]
