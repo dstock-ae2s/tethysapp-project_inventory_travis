@@ -1519,10 +1519,30 @@ def admin(request):
         submit=True
     )
 
+    delete_rev_button = Button(
+        display_text='Delete All Revenue Data',
+        name='add-button',
+        icon='glyphicon glyphicon-remove',
+        style='danger',
+        attributes={'onclick': 'eraseRevenueFromDb();'},
+        submit=True
+    )
+
+    delete_proj_button = Button(
+        display_text='Delete All Project Data',
+        name='add-button',
+        icon='glyphicon glyphicon-remove',
+        style='danger',
+        attributes={'onclick': 'eraseProjectsFromDb();'},
+        submit=True
+    )
+
 
     context = {
         'add_rev_button':add_rev_button,
         'add_project_button': add_proj_button,
+        'delete_rev_button': delete_rev_button,
+        'delete_project_button': delete_proj_button,
     }
 
     session.close()

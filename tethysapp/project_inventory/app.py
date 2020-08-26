@@ -76,6 +76,19 @@ class ProjectInventory(TethysAppBase):
                 url='project-inventory/admin/import-revenue-to-db',
                 controller='project_inventory.ajax_controllers.import_revenue_to_db'
             ),
+            UrlMap(
+                name='erase-projects-from-db',
+                url='project-inventory/admin/erase-projects-from-db',
+                controller='project_inventory.ajax_controllers.erase_projects_from_db'
+            ),
+            UrlMap(
+                name='erase-revenue-from-db',
+                url='project-inventory/admin/erase-revenue-from-db',
+                controller='project_inventory.ajax_controllers.erase_revenue_from_db'
+            ),
+
+
+
             # UrlMap(
             #     name='reload-plotly-graphs',
             #     url='project-inventory/revenue/reload-plotly-graphs',

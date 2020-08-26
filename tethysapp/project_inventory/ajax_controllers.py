@@ -114,11 +114,11 @@ def save_updates_to_db (request):
                     print(annual_payment)
 
             elif recur_checkbox_list[i] == True:
-                annual_payment = float(project_const_cost_list[i])
+                annual_recurpayment = float(project_const_cost_list[i])
                 for j in range(recur_years):
-                    annual_payment = annual_payment * ((inflation_rate+1))
-                    cost_array.append(round(annual_payment))
-                    print(annual_payment)
+                    annual_recurpayment = annual_recurpayment * ((inflation_rate+1))
+                    cost_array.append(round(annual_recurpayment))
+                    print(annual_recurpayment)
 
             print((max(id_list)+i+2))
             # Create new Project record
@@ -295,11 +295,11 @@ def save_cat_updates_to_db (request):
                     print(annual_payment)
 
             elif recur_checkbox_list[i] == True:
-                annual_payment = float(project_const_cost_list[i])
+                annual_recurpayment = float(project_const_cost_list[i])
                 for j in range(recur_years):
-                    annual_payment = annual_payment * ((inflation_rate+1)**j)
-                    cost_array.append(round(annual_payment))
-                    print(annual_payment)
+                    annual_recurpayment = annual_recurpayment * ((inflation_rate+1))
+                    cost_array.append(round(annual_recurpayment))
+                    print(annual_recurpayment)
 
             print(project_est_cost_list[i])
             # Create new Project record
@@ -411,6 +411,40 @@ def import_projects_to_db(request):
 
             row_id = row_id +1
 
+        session.close()
+        return_obj['success'] = "success"
+
+        return JsonResponse(return_obj)
+
+def erase_revenue_from_db(request):
+    return_obj ={}
+    if request.is_ajax() and request.method == 'POST':
+
+        Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+        session = Session()
+
+        revenue_list = session.query(Revenue).all()
+        for revenue in revenue_list:
+            session.delete(revenue)
+
+        session.commit()
+        session.close()
+        return_obj['success'] = "success"
+
+        return JsonResponse(return_obj)
+
+def erase_projects_from_db(request):
+    return_obj ={}
+    if request.is_ajax() and request.method == 'POST':
+
+        Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
+        session = Session()
+
+        project_list = session.query(Project).all()
+        for project in project_list:
+            session.delete(project)
+        
+        session.commit()
         session.close()
         return_obj['success'] = "success"
 

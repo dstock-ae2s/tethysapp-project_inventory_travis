@@ -384,10 +384,10 @@ function financialModal(){
     var map = TETHYS_MAP_VIEW.getMap();
 
     $("#map-bottom-modal").modal('show');
-    document.getElementById('modal-category').innerHTML = "Financial";
+    document.getElementById('modal-category').innerHTML = "Existing Debt";
 
     var data = new FormData();
-    data.append("category","Financial");
+    data.append("category","Existing Debt");
 
     var get_project_categorized_list = ajax_update_database_with_file("get-project-categorized-list", data); //Submitting the data through the ajax function, see main.js for the helper function.
     get_project_categorized_list.done(function(return_data){
