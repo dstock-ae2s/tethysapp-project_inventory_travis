@@ -27,6 +27,8 @@ def get_project_list (request):
 
         for project in project_list:
             if project.facility_id == fac_id:
+                lat = project.latitude
+                lon = project.longitude
                 fac_projname_list.append(project.project)
                 fac_projestcost_list.append(project.est_cost)
                 fac_projconstyear_list.append(project.const_year)
@@ -38,6 +40,8 @@ def get_project_list (request):
                 fac_debt_checkbox_list.append(project.debt_checkbox_val)
                 fac_recur_checkbox_list.append(project.recur_checkbox_val)
 
+        return_obj["lat"] = lat
+        return_obj["lon"] = lon
         return_obj["project_name"] = fac_projname_list
         return_obj["est_cost"] = fac_projestcost_list
         return_obj["const_year"] = fac_projconstyear_list
@@ -63,6 +67,9 @@ def save_updates_to_db (request):
         recur_years = 20
         pay_period = 20
         fac_id = request.POST['facility_id']
+        latitude = request.POST['latitude']
+        longitude = request.POST['longitude']
+        print(latitude)
         project_name_string = request.POST['project_name_list']
         project_name_list = json.loads(project_name_string)
         project_est_cost_list = json.loads(request.POST['project_est_cost_list'])
@@ -83,11 +90,14 @@ def save_updates_to_db (request):
 
         # db_id =1
         project_list = get_all_projects()
+        id_list = []
         for project in project_list:
+            print(project.id)
+            id_list.append(project.id)
             # project.id = db_id
             if project.facility_id == fac_id:
-                latitude = project.latitude
-                longitude = project.longitude
+                # latitude = project.latitude
+                # longitude = project.longitude
                 session.delete(project)
             # db_id = db_id+1
         for i in range(len(project_name_list)):
@@ -110,9 +120,10 @@ def save_updates_to_db (request):
                     cost_array.append(round(annual_payment))
                     print(annual_payment)
 
-            print(project_est_cost_list[i])
+            print((max(id_list)+i+2))
             # Create new Project record
             new_project = Project(
+                # id= (max(id_list)+i+1),
                 latitude=latitude,
                 longitude=longitude,
                 facility_id=fac_id,
@@ -154,6 +165,7 @@ def get_project_categorized_list (request):
     if request.is_ajax() and request.method == 'POST':
         category = request.POST['category']
 
+
         # Get connection/session to database
         Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
         session = Session()
@@ -163,6 +175,8 @@ def get_project_categorized_list (request):
         session.close()
 
         return_obj = {}
+        lat_list = []
+        lon_list = []
         fac_projfacilityid_list = []
         fac_projname_list = []
         fac_projestcost_list = []
@@ -176,6 +190,8 @@ def get_project_categorized_list (request):
 
 
         for project in project_list:
+            lat_list.append(project.latitude)
+            lon_list.append(project.longitude)
             fac_projfacilityid_list.append(project.facility_id)
             fac_projname_list.append(project.project)
             fac_projestcost_list.append(project.est_cost)
@@ -187,6 +203,8 @@ def get_project_categorized_list (request):
             fac_debt_checkbox_list.append(project.debt_checkbox_val)
             fac_recur_checkbox_list.append(project.recur_checkbox_val)
 
+        return_obj["lat_list"] = lat_list
+        return_obj["lon_list"] = lon_list
         return_obj["facility_id"] = fac_projfacilityid_list
         return_obj["project_name"] = fac_projname_list
         return_obj["est_cost"] = fac_projestcost_list
@@ -212,9 +230,24 @@ def save_cat_updates_to_db (request):
         inflation_rate = 0.04
         recur_years = 20
         pay_period = 20
+
+
         category = request.POST['category']
         project_name_string = request.POST['project_name_list']
         project_name_list = json.loads(project_name_string)
+        location_list = json.loads(request.POST['location_list'])
+        print(location_list)
+
+
+        lat_list = json.loads(location_list[0])
+        lon_list = json.loads(location_list[1])
+
+        for i in range(len(project_name_list)-len(lat_list)):
+            lat_list.append(0)
+            lon_list.append(0)
+        print(lat_list)
+        print(lon_list)
+
         project_est_cost_list = json.loads(request.POST['project_est_cost_list'])
         project_const_year_list = json.loads(request.POST['project_const_year_list'])
         project_facility_id_list = json.loads(request.POST['project_facility_id_list'])
@@ -243,13 +276,14 @@ def save_cat_updates_to_db (request):
             # db_id = db_id+1
 
             if project.category == category:
-                latitude = project.latitude
-                longitude = project.longitude
+                # latitude = project.latitude
+                # longitude = project.longitude
                 session.delete(project)
 
         for i in range(len(project_name_list)):
             cost_array = []
-
+            latitude = lat_list[i]
+            longitude =lon_list[i]
             cost_array.append(project_const_cost_list[i])
             if debt_checkbox_list[i] == True:
 
@@ -373,7 +407,7 @@ def import_projects_to_db(request):
 
 
 
-            add_new_project_from_csv(row_id, latitude, longitude, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val)
+            add_new_project_from_csv(latitude, longitude, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val)
 
             row_id = row_id +1
 

@@ -22,9 +22,9 @@
     {% gizmo est_cost_input %}
     {% gizmo const_year_input %}
     {% gizmo const_cost_input %}
-    <label class="control-label" for ="debt-checkbox">Debt?: </label><input class="edit-fields" type="checkbox" id="debt-checkbox" name="debt_checkbox" value="true">
+    <label class="control-label" for ="debt-checkbox">Debt?: </label><input class="edit-fields" type="checkbox" id="debt-checkbox" onload="this.checked = false" name="debt_checkbox">
     <br>
-    <label class="control-label">Recurring?: </label><input class="edit-fields" type="checkbox" id="recur-checkbox" name="recur_checkbox" value="true">
+    <label class="control-label">Recurring?: </label><input class="edit-fields" type="checkbox" id="recur-checkbox" onload="this.checked = false" name="recur_checkbox">
   </form>
 
 {% endblock %}

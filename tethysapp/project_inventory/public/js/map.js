@@ -1,7 +1,12 @@
 function saveDataToDB () {
 
-    var facility_id = document.getElementById('modal-facility-id').innerHTML
+    var facility_id = (document.getElementById('modal-facility-id').innerHTML).replace("Facility ID: ","");
+    console.log((document.getElementById('modal-facility-id').value));
+    var location = document.getElementById('modal-facility-id').value;
+    var latitude = location[0];
+    var longitude = location[1];
 
+    console.log(facility_id);
     var proj_name_list = [];
     var proj_est_cost_list = [];
     var proj_const_year_list = [];
@@ -79,6 +84,8 @@ function saveDataToDB () {
     data.append("project_priority_list",json_proj_priority_list);
     data.append("project_const_cost_list",json_proj_const_cost_list);
     data.append("facility_id", facility_id);
+    data.append("latitude", latitude);
+    data.append("longitude", longitude);
     data.append("project_est_year_list",json_proj_est_year_list);
     data.append("debt_checkbox_list",json_debt_checkbox_list);
     data.append("recur_checkbox_list",json_recur_checkbox_list);
@@ -153,9 +160,28 @@ function inflationCheck(row_num){
         document.getElementById(row_num+'-project-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
 
 };
-function saveCatDataToDB () {
+function inflationCheckC(row_num){
 
-    var category = document.getElementById('modal-category').innerHTML
+        this_est_cost = parseFloat(document.getElementById(row_num+'-projectc-estcost').value)
+        this_const_year = parseFloat(document.getElementById(row_num+'-projectc-constyear').value)
+        this_est_year = parseFloat(document.getElementById(row_num+'-projectc-estyear').value)
+        document.getElementById(row_num+'-projectc-constcost').value = ((this_est_cost*Math.pow(1.04,(this_const_year-this_est_year))).toFixed(0)).toString();
+
+};
+function debtCheckboxCheck(row_num){
+
+
+
+        if((document.getElementById(other).checked =="true")&&(other.checked ==true)){
+            document.getElementById(other).checked = false;
+        }
+};
+function saveCatDataToDB () {
+    var location_list = document.getElementById('modal-category').value;
+    var category = document.getElementById('modal-category').innerHTML;
+    if category == "Financial"{
+        category = "Existing Debt"
+    };
 
     var proj_facility_id_list = []
     var proj_name_list = [];
@@ -175,11 +201,15 @@ function saveCatDataToDB () {
 
         project_name = document.getElementById( i+'-projectc-name').value;
         est_cost = document.getElementById(i+'-projectc-estcost').value;
+        est_cost = currencyToNumber(document.getElementById(i+'-projectc-estcost').value);
+
         const_year = document.getElementById(i+'-projectc-constyear').value;
         facility_id = document.getElementById(i+'-projectc-facilityid').value;
         description = document.getElementById(i+'-projectc-description').value;
         priority = document.getElementById(i+'-projectc-priority').value;
         const_cost = document.getElementById(i+'-projectc-constcost').value;
+        const_cost = currencyToNumber(document.getElementById(i+'-projectc-constcost').value);
+
         est_year = document.getElementById(i+'-projectc-estyear').value;
         debt_is_checkbox = document.getElementById(i+'-debtc-checkbox');
         recur_is_checkbox = document.getElementById(i+'-recurc-checkbox');
@@ -212,6 +242,7 @@ function saveCatDataToDB () {
 
     var data = new FormData();
 
+    var json_location_list = JSON.stringify(location_list);
     var json_proj_name_list = JSON.stringify(proj_name_list);
     var json_proj_est_cost_list = JSON.stringify(proj_est_cost_list);
     var json_proj_const_year_list = JSON.stringify(proj_const_year_list);
@@ -223,6 +254,7 @@ function saveCatDataToDB () {
     var json_debt_checkbox_list = JSON.stringify(debt_checkbox_list);
     var json_recur_checkbox_list = JSON.stringify(recur_checkbox_list);
 
+    data.append('location_list', json_location_list);
     data.append("project_name_list",json_proj_name_list);
     data.append("project_est_cost_list",json_proj_est_cost_list);
     data.append("project_const_year_list",json_proj_const_year_list);
@@ -365,6 +397,12 @@ function financialModal(){
 }
 
 function updateCategorizedModal(return_data){
+    if("lat_list" in return_data){
+        lat_list = return_data.lat_list;
+    };
+    if("lon_list" in return_data){
+        lon_list = return_data.lon_list;
+    };
     if("facility_id" in return_data){
         project_facility_id_list = return_data.facility_id;
     };
@@ -410,7 +448,8 @@ function updateCategorizedModal(return_data){
 
     $('#project-list-table-2 tr').not(':first').remove();
     var html = '';
-
+    location_list = [JSON.stringify(lat_list), JSON.stringify(lon_list)];
+    document.getElementById('modal-category').value = location_list;
     for(var i = 0; i < project_name_list.length; i++){
         if(debt_checkbox_list[i] == "true"){
             console.log("truth revealed")
@@ -430,16 +469,16 @@ function updateCategorizedModal(return_data){
                     '<td><input class="cedit-fields projectc-name" type="text" id="' + (i+1) +'-projectc-name" value="'+ project_name_list[i] + '" disabled></td>' +
                     '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-priority" value="'+ project_priority_list[i] + '" disabled></td>' +
                     '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-description" value="'+ project_description_list[i] + '" disabled></td>' +
-                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-estyear" value="'+ project_est_year_list[i] + '" disabled></td>' +
-                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-estcost" value="'+ numToCurrency(project_est_cost_list[i]) + '" disabled></td>' +
-                    '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-constyear" value="'+ project_const_year_list[i] + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" onchange="inflationCheckC('+(i+1)+');" id="' + (i+1) +'-projectc-estyear" value="'+ project_est_year_list[i] + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" onchange="inflationCheckC('+(i+1)+');" id="' + (i+1) +'-projectc-estcost" value="'+ numToCurrency(project_est_cost_list[i]) + '" disabled></td>' +
+                    '<td><input class="cedit-fields" type="text" onchange="inflationCheckC('+(i+1)+');" id="' + (i+1) +'-projectc-constyear" value="'+ project_const_year_list[i] + '" disabled></td>' +
                     '<td><input class="cedit-fields" type="text" id="' + (i+1) +'-projectc-constcost" value="'+ numToCurrency(project_const_cost_list[i]) + '" disabled></td>' +
                     '<td><input class="cedit-fields" type="checkbox" id="' + (i+1) +'-debtc-checkbox"'+ debt_is_checked + 'disabled></td>' +
                     '<td><input class="cedit-fields" type="checkbox" id="' + (i+1) +'-recurc-checkbox"'+ recur_is_checked + 'disabled></td>' +
                     '<td class="table-button"><div"><a name="csubmit-stop-edit-region" style="display:none;" id="cstop-edit-button-'+(i+1)+'" onclick="stopCatEditRow('+(i+1)+');" class="btn btn-success csubmit-stop-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="csubmit-edit-region" id="cedit-button-'+(i+1)+'" onclick="editCatRow('+(i+1)+');" class="btn btn-warning csubmit-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="csubmit-delete-region" id="cdelete-button-'+(i+1)+'" onclick="deleteCatRow('+(i+1)+', this);" class="btn btn-danger csubmit-delete-region" role="button">'+
-                    '<span class="glyphicon glyphicon-remove"></span> Delete </a>'+
+                    '<span class="glyphicon glyphicon-save"></span></a><a name="csubmit-edit-region" id="cedit-button-'+(i+1)+'" onclick="editCatRow('+(i+1)+');" class="btn btn-warning csubmit-edit-region" role="button">'+
+                    '<span class="glyphicon glyphicon-edit"></span></a><a name="csubmit-delete-region" id="cdelete-button-'+(i+1)+'" onclick="deleteCatRow(this);" class="btn btn-danger csubmit-delete-region" role="button">'+
+                    '<span class="glyphicon glyphicon-remove"></span></a>'+
                     '</div>'+
                     '</td>'+
                 '</tr>';
@@ -582,7 +621,9 @@ function stopCatEditRow (row_num){
     document.getElementById(row_num+'-recurc-checkbox').style.border = 'none';
 };
 
-function deleteRow (row_num){
+function deleteProjRow (elem){
+    console.log(parseInt((elem.id).slice((elem.id).lastIndexOf("-")-(elem.id).length+1)));
+    row_num = parseInt((elem.id).slice((elem.id).lastIndexOf("-")-(elem.id).length+1));
     document.getElementById("project-list-table").deleteRow(row_num);
 
     var project_names = document.querySelectorAll('.project-name');
@@ -604,17 +645,15 @@ function deleteRow (row_num){
     }
 };
 
-function deleteCatRow (row_num, test_id){
+function deleteCatRow (elem){
 
-    console.log(test_id.id);
-    console.log((test_id.id).lastIndexOf("-"));
-    console.log((test_id.id).length);
-    console.log(parseInt((test_id.id).slice((test_id.id).lastIndexOf("-")-(test_id.id).length+1)));
-    var new_row_num = parseInt((test_id.id).slice((test_id.id).lastIndexOf("-")-(test_id.id).length+1));
+
+    var new_row_num = parseInt((elem.id).slice((elem.id).lastIndexOf("-")-(elem.id).length+1));
+    console.log(new_row_num)
     var project_names = document.querySelectorAll('.projectc-name');
     document.getElementById("project-list-table-2").deleteRow(new_row_num);
 
-    for (var i=new_row_num+1; i<=project_names.length; i++){
+    for (var i=new_row_num+1; i<=project_names.length+1; i++){
         document.getElementById(i+'-projectc-name').id = (i-1)+'-projectc-name';
         document.getElementById(i+'-projectc-estcost').id = (i-1)+'-projectc-estcost';
         document.getElementById(i+'-projectc-constyear').id =  (i-1)+'-projectc-constyear';
@@ -636,7 +675,7 @@ function addCatProjectRow (){
 
     var html = '';
 
-        var nrows = document.querySelectorAll('.project-name');
+        var nrows = document.querySelectorAll('.projectc-name');
         numrows = nrows.length;
         console.log(numrows);
         i = numrows;
@@ -646,16 +685,16 @@ function addCatProjectRow (){
                     '<td><input style="border: 1px solid" class="cedit-fields projectc-name" type="text" id="' + (i+1) +'-projectc-name" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-priority" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-description" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-estyear" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-estcost" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-constyear" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" onchange="inflationCheckC('+(i+1)+');" type="text" id="' + (i+1) +'-projectc-estyear" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" onchange="inflationCheckC('+(i+1)+');" type="text" id="' + (i+1) +'-projectc-estcost" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="cedit-fields" onchange="inflationCheckC('+(i+1)+');" type="text" id="' + (i+1) +'-projectc-constyear" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="cedit-fields" type="text" id="' + (i+1) +'-projectc-constcost" value="" ></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debtc-checkbox" value="true"></td>' +
-                    '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recurc-checkbox" value="true"></td>' +
+                    '<td><input class="cedit-fields" type="checkbox" id="' + (i+1) +'-debtc-checkbox" value="true"></td>' +
+                    '<td><input class="cedit-fields" type="checkbox" id="' + (i+1) +'-recurc-checkbox" value="true"></td>' +
                     '<td class="table-button"><div"><a name="csubmit-stop-edit-region" style="display:none;" id="cstop-edit-button-'+(i+1)+'" onclick="stopCatEditRow('+(i+1)+');" class="btn btn-success csubmit-stop-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="csubmit-edit-region" id="cedit-button-'+(i+1)+'" onclick="editCatRow('+(i+1)+');" class="btn btn-warning csubmit-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="csubmit-delete-region" id="cdelete-button-'+(i+1)+'" onclick="deleteCatRow('+(i+1)+',this);" class="btn btn-danger csubmit-delete-region" role="button">'+
-                    '<span class="glyphicon glyphicon-remove"></span> Delete </a>'+
+                    '<span class="glyphicon glyphicon-save"></span>  </a><a name="csubmit-edit-region" id="cedit-button-'+(i+1)+'" onclick="editCatRow('+(i+1)+');" class="btn btn-warning csubmit-edit-region" role="button">'+
+                    '<span class="glyphicon glyphicon-edit"></span>  </a><a name="csubmit-delete-region" id="cdelete-button-'+(i+1)+'" onclick="deleteCatRow(this);" class="btn btn-danger csubmit-delete-region" role="button">'+
+                    '<span class="glyphicon glyphicon-remove"></span>  </a>'+
                     '</div>'+
                     '</td>'+
                 '</tr>';
@@ -718,6 +757,7 @@ $(function() {
 
             document.getElementById('modal-facility-id').innerHTML = "Facility ID: "+ selected_feature.get('facility_id');
 
+
             var data = new FormData();
             data.append("facility_id",selected_feature.get('facility_id'));
             data.append("coordinates",selected_feature.getGeometry().getCoordinates());
@@ -726,6 +766,12 @@ $(function() {
             var get_project_list = ajax_update_database_with_file("get-project-list", data); //Submitting the data through the ajax function, see main.js for the helper function.
             get_project_list.done(function(return_data){
 
+                if("lat" in return_data){
+                    lat = return_data.lat;
+                };
+                if("lon" in return_data){
+                    lon = return_data.lon;
+                };
                 if("est_year" in return_data){
                     project_est_year_list = return_data.est_year;
                 };
@@ -768,7 +814,7 @@ $(function() {
                     console.log(return_data.recur_checkbox);
 
                 };
-
+                document.getElementById('modal-facility-id').value = [lat,lon]
                 $('#project-list-table tr').not(':first').remove();
                 var html = '';
 
@@ -800,7 +846,7 @@ $(function() {
                                 '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox"'+ recur_is_checked + 'disabled></td>' +
                                 '<td class="table-button"><div style:"white-space: nowrap;"><a name="submit-stop-edit-region" style="display:none;" aria-label="Stop Editing" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-group btn-success submit-stop-edit-region" role="button">'+
                                 '<span class="glyphicon glyphicon-save"></span></a><a name="submit-edit-region" aria-label="Edit Row" id="edit-button-'+(i+1)+'" onclick="editRow('+(i+1)+');" class="btn btn-group btn-warning submit-edit-region" role="button">'+
-                                '<span class="glyphicon glyphicon-edit"></span></a><a name="submit-delete-region" aria-label="Delete Row" id="delete-button-'+(i+1)+'" class="btn btn-danger button-group submit-delete-region" role="button">'+
+                                '<span class="glyphicon glyphicon-edit"></span></a><a name="submit-delete-region" aria-label="Delete Row" onclick="deleteProjRow(this);" id="delete-button-'+(i+1)+'" class="btn btn-danger button-group submit-delete-region" role="button">'+
                                 '<span class="glyphicon glyphicon-remove"></span></a>'+
                                 '</div>'+
                                 '</td>'+
@@ -942,16 +988,16 @@ function addProjectRow (){
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-category" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-priority" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-description" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-estyear" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-estcost" value="" ></td>' +
-                    '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constyear" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="edit-fields" onchange="inflationCheck('+(i+1)+')"; type="text" id="' + (i+1) +'-project-estyear" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="edit-fields" onchange="inflationCheck('+(i+1)+')"; type="text" id="' + (i+1) +'-project-estcost" value="" ></td>' +
+                    '<td><input style="border: 1px solid" class="edit-fields" onchange="inflationCheck('+(i+1)+')"; type="text" id="' + (i+1) +'-project-constyear" value="" ></td>' +
                     '<td><input style="border: 1px solid" class="edit-fields" type="text" id="' + (i+1) +'-project-constcost" value="" ></td>' +
                     '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-debt-checkbox" value="true"></td>' +
                     '<td><input class="edit-fields" type="checkbox" id="' + (i+1) +'-recur-checkbox" value="true"></td>' +
                     '<td class="table-button"><div"><a name="submit-stop-edit-region" style="display:none;" id="stop-edit-button-'+(i+1)+'" onclick="stopEditRow('+(i+1)+');" class="btn btn-success submit-stop-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-save"></span> Stop Editing </a><a name="submit-edit-region" id="edit-button-'+(i+1)+'" onclick="editRow('+(i+1)+');" class="btn btn-warning submit-edit-region" role="button">'+
-                    '<span class="glyphicon glyphicon-edit"></span> Edit </a><a name="submit-delete-region" id="delete-button-'+(i+1)+'" class="btn btn-danger submit-delete-region" role="button">'+
-                    '<span class="glyphicon glyphicon-remove"></span> Delete </a>'+
+                    '<span class="glyphicon glyphicon-save"></span></a><a name="submit-edit-region" id="edit-button-'+(i+1)+'" onclick="editRow('+(i+1)+');" class="btn btn-warning submit-edit-region" role="button">'+
+                    '<span class="glyphicon glyphicon-edit"></span></a><a name="submit-delete-region" id="delete-button-'+(i+1)+'" onclick="deleteProjRow(this);" class="btn btn-danger submit-delete-region" role="button">'+
+                    '<span class="glyphicon glyphicon-remove"></span></a>'+
                     '</div>'+
                     '</td>'+
                 '</tr>';

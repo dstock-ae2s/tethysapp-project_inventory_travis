@@ -45,7 +45,7 @@ class Project(Base):
     recur_checkbox_val = Column(String)
 
 
-def add_new_project(row_id, location, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
+def add_new_project(location, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
     """
     Persist new project.
     """
@@ -78,7 +78,7 @@ def add_new_project(row_id, location, facility_id, project, est_cost, const_year
 
     # Create new Project record
     new_project = Project(
-        id= row_id,
+        # id= row_id,
         latitude=latitude,
         longitude=longitude,
         facility_id=facility_id,
@@ -106,7 +106,7 @@ def add_new_project(row_id, location, facility_id, project, est_cost, const_year
     session.close()
 
 
-def add_new_project_from_csv(row_id, latitude, longitude, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
+def add_new_project_from_csv(latitude, longitude, facility_id, project, est_cost, const_year, category, description, priority, est_year, const_cost, debt_checkbox_val, recur_checkbox_val):
     """
     Persist new project.
     """
@@ -135,7 +135,6 @@ def add_new_project_from_csv(row_id, latitude, longitude, facility_id, project, 
 
     # Create new Project record
     new_project = Project(
-        id= row_id,
         latitude=latitude,
         longitude=longitude,
         facility_id=facility_id,

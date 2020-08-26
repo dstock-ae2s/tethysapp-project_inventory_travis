@@ -3,12 +3,14 @@ $(function(){
     $('#est_year').change(function(){updateConstCost();});
     $('#const_year').change(function(){updateConstCost();});
     $('#debt-checkbox').change(function(){
-        if(document.getElementById('debt-checkbox').checked == true){
+
+
+        if ((document.getElementById('debt-checkbox').checked == true) && (document.getElementById('recur-checkbox').checked == true)){
             document.getElementById('recur-checkbox').checked = false;
         }
     });
     $('#recur-checkbox').change(function(){
-        if(document.getElementById('recur-checkbox').checked == true){
+        if ((document.getElementById('debt-checkbox').checked == true) && (document.getElementById('recur-checkbox').checked == true)){
             document.getElementById('debt-checkbox').checked = false;
         }
     });

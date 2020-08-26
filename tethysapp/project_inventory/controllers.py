@@ -26,8 +26,6 @@ def home(request, app_workspace):
     Controller for the app home page.
     """
 
-
-
     # Get list of projects and create projects MVLayer:
     projects = get_all_projects()
     ww_features = []
@@ -74,7 +72,7 @@ def home(request, app_workspace):
             elif project.category == "Golf":
                 golf_features.append(project_feature)
             elif project.category == "Transportation":
-                fac_features.append(project_feature)
+                transp_features.append(project_feature)
             else:
                 w_features.append(project_feature)
 
@@ -478,8 +476,8 @@ def add_facility(request):
     priority = ''
     est_year = ''
     const_cost = ''
-    debt_checked = False
-    recur_checked = False
+    debt_checked = "false"
+    recur_checked = "false"
 
 
     # Errors
@@ -523,6 +521,7 @@ def add_facility(request):
         description = (request.POST.get('description', None))
         debt_checked = (request.POST.get('debt_checkbox', None))
         recur_checked = (request.POST.get('recur_checkbox', None))
+
 
         # Validate
         if not facility_id:
@@ -575,9 +574,18 @@ def add_facility(request):
             session = Session()
             num_projects = session.query(Project).count()
 
+            if debt_checked == None:
+                debt_checked = "false"
+            elif debt_checked == "on":
+                debt_checked = "true"
+            if recur_checked == None:
+                recur_checked = "false"
+            elif recur_checked == "on":
+                recur_checked = "true"
+
             # Only add the project if custom setting doesn't exist or we have not exceed max_projects
             if not max_projects or num_projects < max_projects:
-                add_new_project(row_id=(num_projects+1), location=location, facility_id=facility_id, project=project, est_cost=est_cost, const_year=const_year, category=category, description=description, priority=priority, est_year=est_year, const_cost=const_cost, debt_checkbox_val=debt_checked, recur_checkbox_val=recur_checked)
+                add_new_project(location=location, facility_id=facility_id, project=project, est_cost=est_cost, const_year=const_year, category=category, description=description, priority=priority, est_year=est_year, const_cost=const_cost, debt_checkbox_val=debt_checked, recur_checkbox_val=recur_checked)
                 print("Project Added")
             else:
                 messages.warning(request, 'Unable to add project "{0}", because the inventory is full.'.format(facility_id))
@@ -1256,7 +1264,7 @@ def revenue_vs_requirements(request):
     )
 
     bargraph_high_px.update_layout(
-        yaxis=dict(title='Revenue/Revenue Required (USD)', ),
+        yaxis=dict(title='Revenue/Revenue Requirements (USD)', ),
         xaxis=dict(title='Year'),
         legend=dict(title='Category')
     )
@@ -1279,7 +1287,7 @@ def revenue_vs_requirements(request):
     )
 
     bargraph_med_px.update_layout(
-        yaxis=dict(title='Revenue/Revenue Required (USD)', ),
+        yaxis=dict(title='Revenue/Revenue Requirements (USD)', ),
         xaxis=dict(title='Year'),
         legend=dict(title='Category')
     )
@@ -1302,7 +1310,7 @@ def revenue_vs_requirements(request):
     )
 
     bargraph_low_px.update_layout(
-        yaxis=dict(title='Revenue/Revenue Required (USD)', ),
+        yaxis=dict(title='Revenue/Revenue Requirements (USD)', ),
         xaxis=dict(title='Year'),
         legend=dict(title='Category')
     )
