@@ -236,8 +236,8 @@ def home(request, app_workspace):
     }}
     transp_style = {'ol.style.Style': {
         'image': {'ol.style.Icon': {
-            'src': '/static/project_inventory/images/Transportation.png',
-            'scale': 0.09,
+            'src': '/static/project_inventory/images/TranspoRed.png',
+            'scale': 0.033,
             # 'points': 4,
             # 'angle': np.pi / 4,
             # 'fill': {'ol.style.Fill': {

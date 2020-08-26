@@ -179,9 +179,8 @@ function debtCheckboxCheck(row_num){
 function saveCatDataToDB () {
     var location_list = document.getElementById('modal-category').value;
     var category = document.getElementById('modal-category').innerHTML;
-    if category == "Financial"{
-        category = "Existing Debt"
-    };
+
+
 
     var proj_facility_id_list = []
     var proj_name_list = [];
@@ -388,7 +387,7 @@ function financialModal(){
     document.getElementById('modal-category').innerHTML = "Financial";
 
     var data = new FormData();
-    data.append("category","Existing Debt");
+    data.append("category","Financial");
 
     var get_project_categorized_list = ajax_update_database_with_file("get-project-categorized-list", data); //Submitting the data through the ajax function, see main.js for the helper function.
     get_project_categorized_list.done(function(return_data){
@@ -653,7 +652,7 @@ function deleteCatRow (elem){
     var project_names = document.querySelectorAll('.projectc-name');
     document.getElementById("project-list-table-2").deleteRow(new_row_num);
 
-    for (var i=new_row_num+1; i<=project_names.length+1; i++){
+    for (var i=new_row_num+1; i<=project_names.length; i++){
         document.getElementById(i+'-projectc-name').id = (i-1)+'-projectc-name';
         document.getElementById(i+'-projectc-estcost').id = (i-1)+'-projectc-estcost';
         document.getElementById(i+'-projectc-constyear').id =  (i-1)+'-projectc-constyear';
